@@ -1,2 +1,5 @@
 # RSATiralabra
-School project about RSA
+
+Moi
+
+[Viikko 1](dokumentaatio/Viikko 1.md)
