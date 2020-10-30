@@ -2,4 +2,4 @@
 
 Moi
 
-[Viikko 1](dokumentaatio/Viikko 1.md)
+[Viikko 1](dokumentaatio/Viikkoraportit/Viikko1.md)
