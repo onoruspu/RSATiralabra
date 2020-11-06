@@ -7,11 +7,13 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'application'
+apply plugin: 'checkstyle'
 
 mainClassName = 'main.Main'
 
 checkstyle {
 	toolVersion '8.37'
+	configFile file("config/checkstyle/checkstyle.xml")
 }
 
 repositories {
