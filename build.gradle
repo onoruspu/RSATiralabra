@@ -1,9 +1,18 @@
+plugins {
+	id 'java'
+	id 'checkstyle'
+	id 'jacoco'
+}
+
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'application'
 
+mainClassName = 'main.Main'
 
-mainClassName = 'Main'
+checkstyle {
+	toolVersion '8.37'
+}
 
 repositories {
     jcenter()
@@ -21,3 +30,18 @@ jacocoTestReport {
 }
 
 check.dependsOn jacocoTestReport
+
+task generateRestApiDocs(type: Javadoc) {
+  source = sourceSets.main.allJava
+  options {
+	setMemberLevel JavadocMemberLevel.PRIVATE
+  }
+  options.memberLevel = JavadocMemberLevel.PRIVATE
+  options.showAll()
+}
+
+jar {
+	manifest {
+		attributes( 'Main-class': 'main.Main')
+	}
+}
