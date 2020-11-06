@@ -1,0 +1,1 @@
+Checkstyle käyttää versiota 8.37. Checkstyle.xml tiedostoon on tallennettu konfiguraatiot. Konfiguraation sisältö vastaa Googlen Java tyyliä [linkki](https://google.github.io/styleguide/javaguide.html).
