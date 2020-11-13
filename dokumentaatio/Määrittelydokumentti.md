@@ -47,8 +47,14 @@ Kaikki lähteet on haettu aikavälillä 28.10.2020 - 6.11.2020.
 * Gradle - https://gradle.org/
 	* https://docs.gradle.org/current/userguide/jacoco_plugin.html
 	
-* Checkstyle - https://checkstyle.sourceforge.io/
+* Codereadability - https://www.codereadability.com/
+	* Matt Zeunert - Maximum Line Length - https://www.codereadability.com/maximum-line-length/
+	
+* Checkstyle - https://checkstyle.sourceforge.io/ - https://checkstyle.org/
+	* https://checkstyle.org/config_coding.html
+	* https://checkstyle.org/config_naming.html
 	* https://checkstyle.sourceforge.io/cmdline.html
+	* https://checkstyle.sourceforge.io/config_design.html
 
 * IETF - https://ietf.org/
 	* RFC2313 - https://tools.ietf.org/html/rfc2313
@@ -56,18 +62,30 @@ Kaikki lähteet on haettu aikavälillä 28.10.2020 - 6.11.2020.
 	* RFC3447 - https://tools.ietf.org/html/rfc3447
 	* RFC8017 - https://tools.ietf.org/html/rfc8017
 	
-*Java2Blog - https://java2blog.com/
+* Javatpoint - https://www.javatpoint.com/
+	* Java Convert int to char - https://www.javatpoint.com/java-int-to-char
+	* Unicode System - https://www.javatpoint.com/unicode-system-in-java
+	
+* Java2Blog - https://java2blog.com/
 	* no main manifest attribute - https://java2blog.com/no-main-manifest-attribute/
 
 * JUnit - https://junit.org/junit5/
+
+* Know Program - https://www.knowprogram.com/
+	* Unicode Character Set in Java - https://www.knowprogram.com/java/unicode-character-set/
+
+* Medium - https://medium.com/
+	* Javinpaul - Does Column Width of 80 Make Sense in 2020? - https://medium.com/@javinpaul/does-column-width-of-80-make-sense-in-2018-50c161fbdcf6
 	
 * OpenJDK - https://openjdk.java.net/
 
 * OpenSSL - https://www.openssl.org/
 
 * Oracle - https://www.oracle.com/index.html
+	* Class Character - https://docs.oracle.com/javase/7/docs/api/java/lang/Character.html#unicode
 	* Class StringBuilder - https://docs.oracle.com/javase/7/docs/api/java/lang/StringBuilder.html
-
+	* Primitive Data Types - https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html
+	
 * Princeton Universty - https://introcs.cs.princeton.edu/java/99crypto/RSA.java.html
 
 * PuTTYgen - https://www.puttygen.com/
@@ -76,12 +94,24 @@ Kaikki lähteet on haettu aikavälillä 28.10.2020 - 6.11.2020.
 	* https://people.csail.mit.edu/rivest/Rsapaper.pdf
 	
 * Stackoverflow - https://stackoverflow.com/
+	* CheckStyle with warning '100' is a magic number - https://stackoverflow.com/questions/30044804/checkstyle-with-warning-100-is-a-magic-number
+	* How to generate javado documentation with umlauts - https://stackoverflow.com/questions/1319489/how-to-generate-javadoc-documentation-with-umlauts
+	* JavadocPackage usage in checkstyle - https://stackoverflow.com/questions/1366044/javadocpackage-usage-in-checkstyle
 	* JUnit test for System.out.println() - https://stackoverflow.com/questions/1119385/junit-test-for-system-out-println
+	* Manually converting a string to an integer in Java - https://stackoverflow.com/questions/8893768/manually-converting-a-string-to-an-integer-in-java
 	* Netbeans - fix imports on entire project - https://stackoverflow.com/questions/30321854/netbeans-fix-imports-on-entire-project
+	* private final static attribute vs private final attribute - https://stackoverflow.com/questions/1415955/private-final-static-attribute-vs-private-final-attribute
+	* Should we keep 80 characters per line in Java? - https://stackoverflow.com/questions/6724945/should-we-keep-80-characters-per-line-in-java
+	* What is a magic number, and why is it bad? - https://stackoverflow.com/questions/47882/what-is-a-magic-number-and-why-is-it-bad
+	* Why am I getting this warning about utility classes in Java - https://stackoverflow.com/questions/7766277/why-am-i-getting-this-warning-about-utility-classes-in-java
+	
 
 * Tutorialspoints - https://www.tutorialspoint.com/index.htm
 	* Java - Arrays - https://www.tutorialspoint.com/java/java_arrays.htm
+	* JUnit - Exceptions Test - https://www.tutorialspoint.com/junit/junit_exceptions_test.htm
 	* JUnit - Quick Guide - https://www.tutorialspoint.com/junit/junit_quick_guide.htm
+	
+* https://unicode-table.com/en/
 	
 * Vojtech Ruzicka - https://www.vojtechruzicka.com/
 	* Bit Manipulation in Java – Bitwise and Bit Shift operations - https://www.vojtechruzicka.com/bit-manipulation-java-bitwise-bit-shift-operations/
@@ -98,6 +128,7 @@ Kaikki lähteet on haettu aikavälillä 28.10.2020 - 6.11.2020.
 	* Deterministic algorithm - https://en.wikipedia.org/wiki/Deterministic_algorithm
 	* Fermat's little theorem - https://en.wikipedia.org/wiki/Fermat%27s_little_theorem
 	* Fii - https://fi.wikipedia.org/wiki/Fii
+	* Final (Java) - https://en.wikipedia.org/wiki/Final_%28Java%29
 	* Greatest common divisor - https://en.wikipedia.org/wiki/Greatest_common_divisor
 	* Integer factorization - https://en.wikipedia.org/wiki/Integer_factorization
 	* Known plaintext attack - https://en.wikipedia.org/wiki/Known-plaintext_attack

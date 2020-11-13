@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Kayttoliittyma.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RSATiralabra</a> &gt; <a href="index.source.html" class="el_package">kayttoliittyma</a> &gt; <span class="el_source">Kayttoliittyma.java</span></div><h1>Kayttoliittyma.java</h1><pre class="source lang-java linenums">
+package kayttoliittyma;
+
+import apu.MerkkijonoMuutos;
+import java.math.BigInteger;
+import java.util.Scanner;
+import avain.SalausPurku;
+import avain.Avain;
+import avain.AvaimenLuoja;
+
+/**
+ * Käyttöliittymä. Käyttäjän on mahdollista käyttöliittymän kautta käyttää sovelluksen toimnnallisuuksia.
+ */
+public class Kayttoliittyma {
+    /**
+     * Montako päätason komentoa käyttöliittymä tunnistaa.
+     */
+    private static final int PÄÄTASON_KOMENTOJEN_LUKUMÄÄRÄ = 6;
+
+    /**
+     * Kuinka pitkiä päätason komennot ovat.
+     */
+    private static final int PÄÄTASON_KOMENNON_PITUUS = 1;
+
+    /**
+     * Syötteen lukija.
+     */
+    private final Scanner syötteenLukija;
+
+    /**
+     * Muuttujalla pidetään kirjaa siitä jatketaanko ohjelman suoritusta päätasolla.
+     * Asetetaan muuttuja aluksi epätodeksi, jotta suoritus ei koskaan ala tarkoituksettomasti.
+     */
+<span class="fc" id="L34">    private boolean jatkaPäätasonSilmukkaa = false;</span>
+
+    /**
+     * Muuttujalla pidetään kirjaa siitä jatketaanko ohjelman suoritusta alemmalla tasolla.
+     */
+<span class="fc" id="L39">    private boolean jatkaAlitasonSilmukkaa = false;</span>
+
+    /**
+     * Parametriton konstruktori käyttöliittymälle.
+     */
+<span class="fc" id="L44">    public Kayttoliittyma() {</span>
+<span class="fc" id="L45">        this.syötteenLukija = new Scanner(System.in);</span>
+<span class="fc" id="L46">    }</span>
+
+    /**
+     * Parematerillinen konstruktori käyttöliittymälle.
+     *
+     * @param newScanner Lukija käyttäjän syötteille.
+     */
+<span class="fc" id="L53">    public Kayttoliittyma(final Scanner newScanner) {</span>
+<span class="fc" id="L54">        this.syötteenLukija = newScanner;</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * Käynnistä käyttöliittymä.
+     */
+    public void käynnistä() {
+<span class="fc" id="L61">        System.out.println(&quot;\nTervetuloa RSA salausohjelmaan.&quot;); // Tervetuloviesti.</span>
+<span class="fc" id="L62">        this.jatkaPäätasonSilmukkaa = true; // Asetetaan silmukka käyttöön.</span>
+<span class="fc" id="L63">        pääSilmukka(); // Suoritetaan sovellusta, kunnes käyttäjä sulkee sen.</span>
+<span class="fc" id="L64">    }</span>
+
+    /**
+     * Käyttöliittymän päätason silmukka. Niin kauan kuin päätason silmukka on suorituksessa, on ohjelmakin päällä.
+     */
+    public void pääSilmukka() {
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        while (this.jatkaPäätasonSilmukkaa) { // Päätason silmukka.</span>
+<span class="fc" id="L71">            tulostaPääkomennot(); // Kerrotaan päätason komennot.</span>
+<span class="fc" id="L72">            String input = lueSyöte(&quot;\nKomento: &quot;); // Luetaan syöte.</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">            if (onPääkomento(input)) {</span>
+<span class="fc" id="L74">                int subLevel = komennonArvo(input);</span>
+<span class="fc bfc" id="L75" title="All 4 branches covered.">                if (subLevel == 0 || subLevel == 1) {</span>
+<span class="fc" id="L76">                    suoritaKomento(subLevel); // Komennot 0,1, joilla ei ole mielekästä</span>
+                                          // alemman tason silmukkaa suoritetaan suoraan.
+                } else {
+<span class="fc" id="L79">                    aliSilmukka(subLevel); // Komennot 2,3,4,5. Siirrytään alemman tason silmukkaan.</span>
+                }
+<span class="fc" id="L81">            } else {</span>
+<span class="fc" id="L82">                eiPääkomento(); // Virheellinen komento.</span>
+            }
+<span class="fc" id="L84">        }</span>
+<span class="fc" id="L85">    }</span>
+
+    /**
+     * Käyttöliittymän alitason silmukka. Päätason silmukka voi kutsua alemman tason silmukoita,
+     * mikäli näille on tarvetta.
+     *
+     * @param subLevel arvo, joka määrittää mitä komentoa alitason silmukka suorittaa.
+     */
+    public void aliSilmukka(final int subLevel) {
+<span class="fc" id="L94">        this.jatkaAlitasonSilmukkaa = true; // Asetetaan alempi silmukka pyörimään.</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        while (this.jatkaAlitasonSilmukkaa) { // Jatketaan suoritusta kunnes käyttäjä poistuu silmukasta.</span>
+<span class="fc" id="L96">            tulostaAlikomennot(subLevel); // Kerrotaan tietoa käyttäjälle.</span>
+<span class="fc" id="L97">            suoritaKomento(subLevel); // Suoritetaan itse komento.</span>
+        }
+<span class="fc" id="L99">    }</span>
+
+    /**
+     * Luetaan käyttäjältä syöte.
+     *
+     * @param messageToUser käyttäjälle lähetettävä viesti, jolla voidaan esimerkiksi tarkentaa haluttua syötettä.
+     * Mikäli viesti ei ole tarpeellinen voidaan lähettää tyhjä merkkijono &quot;&quot;.
+     *
+     * @return käyttäjän antama syöte.
+     */
+    public String lueSyöte(final String messageToUser) {
+<span class="fc" id="L110">        System.out.print(messageToUser);</span>
+<span class="fc" id="L111">        String input = this.syötteenLukija.nextLine();</span>
+<span class="fc" id="L112">        return input;</span>
+    }
+
+
+    /**
+     * Tarkistetaan onko annettu syöte päätason komento.
+     *
+     * @param input käyttäjän syöte.
+     *
+     * @return onko syöte sallittu?
+     */
+    public boolean onPääkomento(final String input) {
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (!onEpänegatiivinenLuku(input)) {</span>
+<span class="fc" id="L125">            return false;</span>
+        }
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        if (input.length() != Kayttoliittyma.PÄÄTASON_KOMENNON_PITUUS) { // Tarkista komennon pituus.</span>
+<span class="fc" id="L128">            return false;</span>
+        }
+<span class="fc" id="L130">        int command = Integer.valueOf(input); // Syöte luvuksi.</span>
+        // Tarkista, että että komento on sallitulla välillä [0, thisPÄÄTASON_KOMENTOJEN_LUKUMÄÄRÄ-1].
+<span class="pc bpc" id="L132" title="1 of 4 branches missed.">        if (command &lt; 0 || command &gt; Kayttoliittyma.PÄÄTASON_KOMENTOJEN_LUKUMÄÄRÄ - 1) {</span>
+<span class="fc" id="L133">            return false;</span>
+        }
+<span class="fc" id="L135">        return true;</span>
+    }
+
+    /**
+     * Tarkistetaan onko annettu syöte epänegatiivinen numero.
+     *
+     * @param input käyttäjän syöte.
+     *
+     * @return onko syöte epänegatiivinen numero?
+     */
+    public boolean onEpänegatiivinenLuku(final String input) {
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        if (input == null) { // Tarkista, että viittaus on aito.</span>
+<span class="fc" id="L147">            return false;</span>
+        }
+<span class="fc bfc" id="L149" title="All 2 branches covered.">        if (input.length() &lt;= 0) { // Tarkista pituus.</span>
+<span class="fc" id="L150">            return false;</span>
+        }
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        if (!sisältääVainNumeroita(input)) { // Tarkista, että syöte koostuu numeroista.</span>
+<span class="fc" id="L153">            return false;</span>
+        }
+<span class="fc" id="L155">        return true;</span>
+    }
+
+    /**
+     * Tarkistetaan onko annettu syöte positiivinen numero.
+     *
+     * @param input käyttäjän syöte.
+     *
+     * @return onko syöte positiivinen numero?
+     */
+    public boolean onPositiivinenLuku(final String input) {
+<span class="pc bpc" id="L166" title="1 of 4 branches missed.">        if (onEpänegatiivinenLuku(input) &amp;&amp; !input.equals(&quot;0&quot;)) {</span>
+            // Jos syöte ei ole epänegatiivinen numero eikä nolla, on se positiivinen.
+<span class="fc" id="L168">            return true;</span>
+        }
+<span class="fc" id="L170">        return false;</span>
+    }
+
+    /**
+     * Tarkistetaan, että syöte sisältää vain numeroita.
+     *
+     * @param input käyttäjän syöte.
+     *
+     * @return onko syötteessä vain numeroita?
+     */
+    public boolean sisältääVainNumeroita(final String input) {
+<span class="fc bfc" id="L181" title="All 2 branches covered.">        for (int i = 0; i &lt; input.length(); i++) { // Tarkista, että syötteessä on vain numeroita.</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">            if (!Character.isDigit(input.charAt(i))) {</span>
+<span class="fc" id="L183">                return false;</span>
+            }
+        }
+<span class="fc" id="L186">        return true;</span>
+    }
+
+    /**
+     * Ilmoita käyttäjälle virheellisestä syötteestä ja kerro päätasoon komennot.
+     */
+    public void eiPääkomento() {
+<span class="fc" id="L193">        System.out.println(&quot;\nVirheellinen komento.&quot;);</span>
+<span class="fc" id="L194">        tulostaPääkomennot();</span>
+<span class="fc" id="L195">    }</span>
+
+    /**
+     * Kerätään syötteestä tieto siitä mitä komentoa halutaan suorittaa.
+     *
+     * @param input komento tekstimuodossa.
+     *
+     * @return komennon numero kokonaislukuna.
+     */
+    public int komennonArvo(final String input) {
+        // Syötteen tarkistuksen tulisi estää, että muunnos kokonaisluvuksi ei epäonnistu koskaan.
+<span class="fc" id="L206">        return Integer.valueOf(input);</span>
+    }
+
+    /**
+     * Suorita komento.
+     *
+     * @param command komennon numero kokonaislukuna.
+     */
+    public void suoritaKomento(final int command) {
+<span class="fc bfc" id="L215" title="All 2 branches covered.">        if (command == 0) {</span>
+<span class="fc" id="L216">            sulje();</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">        } else if (command == 1) {</span>
+<span class="fc" id="L218">            luoAvaimet();</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">        } else if (command == 2) {</span>
+<span class="fc" id="L220">            viestiLukujenMuotoon();</span>
+<span class="fc bfc" id="L221" title="All 2 branches covered.">        } else if (command == 3) {</span>
+<span class="fc" id="L222">            lukuViestinMuotoon();</span>
+<span class="fc bfc" id="L223" title="All 2 branches covered.">        } else if (command == 4) {</span>
+<span class="fc" id="L224">            salaus();</span>
+<span class="pc bpc" id="L225" title="1 of 2 branches missed.">        } else if (command == 5) {</span>
+<span class="fc" id="L226">            purku();</span>
+        }
+<span class="fc" id="L228">    }</span>
+
+    /**
+     * Asetetaan ohjelma suljettavaksi ja kerrotaan tästä käyttäjälle.
+     */
+    public void sulje() {
+<span class="fc" id="L234">        System.out.println(&quot;Suljetaan ohjelma.&quot;);</span>
+<span class="fc" id="L235">        this.jatkaPäätasonSilmukkaa = false;</span>
+<span class="fc" id="L236">        this.jatkaAlitasonSilmukkaa = false;</span>
+<span class="fc" id="L237">    }</span>
+
+    /**
+     * Luodaan julkinen ja yksityinen RSA avain ja kerrotaan nämä käyttäjälle.
+     */
+    public void luoAvaimet() {
+<span class="fc" id="L243">        AvaimenLuoja keyGen = new AvaimenLuoja();</span>
+<span class="fc" id="L244">        Avain key = keyGen.luoAvaimet();</span>
+<span class="fc" id="L245">        System.out.println(&quot;Luodun avaimen arvot:&quot;);</span>
+<span class="fc" id="L246">        System.out.print(&quot;n: &quot;);</span>
+<span class="fc" id="L247">        System.out.println(key.getN());</span>
+<span class="fc" id="L248">        System.out.print(&quot;e: &quot;);</span>
+<span class="fc" id="L249">        System.out.println(key.getE());</span>
+<span class="fc" id="L250">        System.out.print(&quot;d: &quot;);</span>
+<span class="fc" id="L251">        System.out.println(key.getD());</span>
+<span class="fc" id="L252">    }</span>
+
+    /**
+     * Muutetaan viesti numeroiksi ja kerrotaan tulos käyttäjälle.
+     */
+    public void viestiLukujenMuotoon() {
+<span class="fc" id="L258">        String input = lueSyöte(&quot;Luvuksi muutettava viesti: &quot;);</span>
+<span class="pc bpc" id="L259" title="1 of 2 branches missed.">        if (tarkistaPaluu(input)) { // Tarkistetaan haluaako käyttäjä poistua.</span>
+<span class="nc" id="L260">            return;</span>
+        }
+<span class="fc" id="L262">        MerkkijonoMuutos stringConvert = new MerkkijonoMuutos();</span>
+<span class="fc" id="L263">        String numberForm = stringConvert.merkkijonoLukujenMuotoon(input);</span>
+<span class="fc" id="L264">        System.out.println(&quot;Viesti lukuna:\n&quot; + numberForm);</span>
+<span class="fc" id="L265">        System.out.println(&quot;Riippuen (konsolin) konfiguraatioista ei kaikkia merkkejä välttämättä saada muutettua.&quot;</span>
+                + &quot; Tarkista, että alla oleva tulostus on järkevä. Mikäli ei ole, muuta käyttämiäsi merkkejä.&quot;);
+<span class="fc" id="L267">        System.out.println(&quot;Tarkistus:\n&quot; + stringConvert.lukujenMuotoMerkkijonoksi(numberForm));</span>
+<span class="fc" id="L268">        this.jatkaAlitasonSilmukkaa = false; // Palataan pääsilmukkaan.</span>
+<span class="fc" id="L269">    }</span>
+
+    /**
+     * Muutetaan merkkijonona olevat numerot merkeiksi ja kerrotaan tulos käyttäjälle.
+     */
+    public void lukuViestinMuotoon() {
+<span class="fc" id="L275">        String input = lueSyöte(&quot;Viestiksi muutettava luku: &quot;);</span>
+<span class="fc bfc" id="L276" title="All 2 branches covered.">        if (tarkistaPaluu(input)) { // Tarkistetaan haluaako käyttäjä poistua.</span>
+<span class="fc" id="L277">            return;</span>
+        }
+<span class="fc bfc" id="L279" title="All 2 branches covered.">        if (onPositiivinenLuku(input)) {</span>
+<span class="fc" id="L280">            MerkkijonoMuutos stringConvert = new MerkkijonoMuutos();</span>
+<span class="fc" id="L281">            String messageForm = stringConvert.lukujenMuotoMerkkijonoksi(input);</span>
+<span class="fc" id="L282">            System.out.println(&quot;Luku viestinä:\n&quot; + messageForm);</span>
+<span class="fc" id="L283">            this.jatkaAlitasonSilmukkaa = false; // Palataan pääsilmukkaan.</span>
+<span class="fc" id="L284">        } else {</span>
+<span class="fc" id="L285">            System.out.println(&quot;Virheellinen syöte. Onhan syöte positiivinen luku?&quot;);</span>
+        }
+
+<span class="fc" id="L288">    }</span>
+
+    /**
+     * Viestin salaus. Kerrotaan tulos käyttäjälle.
+     */
+    public void salaus() {
+        // Haluamme sallia käyttäjälle poistumisen kaikissa kohdissa.
+        // Tämän takia jokaisen syötteen jälkeen on tarkistus.
+<span class="fc" id="L296">        String inputNumber = lueSyöte(&quot;Anna viesti (numeroina): &quot;);</span>
+<span class="fc bfc" id="L297" title="All 2 branches covered.">        if (tarkistaPaluu(inputNumber)) { // Tarkistetaan haluaako käyttäjä poistua.</span>
+<span class="fc" id="L298">            return;</span>
+        }
+
+<span class="fc" id="L301">        String inputE = lueSyöte(&quot;Anna julkinen avain (e): &quot;);</span>
+<span class="fc bfc" id="L302" title="All 2 branches covered.">        if (tarkistaPaluu(inputE)) { // Tarkistetaan haluaako käyttäjä poistua.</span>
+<span class="fc" id="L303">            return;</span>
+        }
+
+<span class="fc" id="L306">        String inputN = lueSyöte(&quot;Anna osamäärä (n): &quot;);</span>
+<span class="fc bfc" id="L307" title="All 2 branches covered.">        if (tarkistaPaluu(inputN)) { // Tarkistetaan haluaako käyttäjä poistua.</span>
+<span class="fc" id="L308">            return;</span>
+        }
+
+        // Tarkistetaan syöte
+<span class="pc bpc" id="L312" title="2 of 6 branches missed.">        if (onPositiivinenLuku(inputNumber) &amp;&amp; onPositiivinenLuku(inputN) &amp;&amp; onPositiivinenLuku(inputE)) {</span>
+<span class="fc" id="L313">            SalausPurku deencode = new SalausPurku(); // Uusi salausolio.</span>
+<span class="fc" id="L314">            Avain key = new Avain(new BigInteger(inputN), new BigInteger(inputE), new BigInteger(&quot;0&quot;)); // Uusi avain.</span>
+<span class="fc" id="L315">            String encoded = deencode.salaus(key, new BigInteger(inputNumber)); // Varsinainen salaus.</span>
+<span class="fc" id="L316">            System.out.println(&quot;Viesti salatussa muodossa:\n&quot; + encoded); // Kerrotaan käyttäjälle.</span>
+<span class="fc" id="L317">            this.jatkaAlitasonSilmukkaa = false; // Poistutaan alemman tason silmukasta.</span>
+<span class="fc" id="L318">        } else {</span>
+<span class="fc" id="L319">            System.out.println(&quot;Virheellinen syöte. Onhan syöte positiivinen luku?&quot;);</span>
+        }
+<span class="fc" id="L321">    }</span>
+
+    /**
+     * Viestin purku. Kerrotaan tulos käyttäjälle.
+     */
+    public void purku() {
+        // Haluamme sallia käyttäjälle poistumisen kaikissa kohdissa.
+        // Tämän takia jokaisen syötteen jälkeen on tarkistus.
+<span class="fc" id="L329">        String inputNumber = lueSyöte(&quot;Anna viesti (numeroina): &quot;);</span>
+<span class="fc bfc" id="L330" title="All 2 branches covered.">        if (tarkistaPaluu(inputNumber)) { // Tarkistetaan haluaako käyttäjä poistua.</span>
+<span class="fc" id="L331">            return;</span>
+        }
+
+<span class="fc" id="L334">        String inputN = lueSyöte(&quot;Anna osamäärä (n): &quot;);</span>
+<span class="fc bfc" id="L335" title="All 2 branches covered.">        if (tarkistaPaluu(inputN)) { // Tarkistetaan haluaako käyttäjä poistua.</span>
+<span class="fc" id="L336">            return;</span>
+        }
+
+<span class="fc" id="L339">        String inputD = lueSyöte(&quot;Anna yksityinen avain (d): &quot;);</span>
+<span class="fc bfc" id="L340" title="All 2 branches covered.">        if (tarkistaPaluu(inputD)) { // Tarkistetaan haluaako käyttäjä poistua.</span>
+<span class="fc" id="L341">            return;</span>
+        }
+
+        // Tarkistetaan syöte
+<span class="pc bpc" id="L345" title="2 of 6 branches missed.">        if (onPositiivinenLuku(inputNumber) &amp;&amp; onPositiivinenLuku(inputN) &amp;&amp; onPositiivinenLuku(inputD)) {</span>
+<span class="fc" id="L346">            SalausPurku deencode = new SalausPurku(); // Uusi purkuolio.</span>
+<span class="fc" id="L347">            Avain key = new Avain(new BigInteger(inputN), new BigInteger(&quot;0&quot;), new BigInteger(inputD)); // Uusi avain.</span>
+<span class="fc" id="L348">            String decoded = deencode.purku(key, new BigInteger(inputNumber)); // Varsinainen purku.</span>
+<span class="fc" id="L349">            System.out.println(&quot;Viesti puretussa muodossa:\n&quot; + decoded); // Kerrotaan käyttäjälle.</span>
+<span class="fc" id="L350">            this.jatkaAlitasonSilmukkaa = false; // Poistutaan alemman tason silmukasta.</span>
+<span class="fc" id="L351">        } else {</span>
+<span class="fc" id="L352">            System.out.println(&quot;Virheellinen syöte. Onhan syöte positiivinen luku?&quot;);</span>
+        }
+<span class="fc" id="L354">    }</span>
+
+    /**
+     * Tarkistetaan haluaako käyttäjä palata takaisin päätasolle.
+     *
+     * @param input käyttäjän syöte.
+     *
+     * @return palataanko takaisin päätasolle?
+     */
+    public boolean tarkistaPaluu(final String input) {
+<span class="fc bfc" id="L364" title="All 2 branches covered.">        if (input.equals(&quot;0&quot;)) {</span>
+<span class="fc" id="L365">            System.out.println(&quot;Palataan takaisin.&quot;);</span>
+<span class="fc" id="L366">            this.jatkaAlitasonSilmukkaa = false;</span>
+<span class="fc" id="L367">            return true;</span>
+        }
+<span class="fc" id="L369">        return false;</span>
+    }
+
+    /**
+     * Tulostetaan sallitut päätason komennot.
+     */
+    public void tulostaPääkomennot() {
+<span class="fc" id="L376">        System.out.println(&quot;\nKomennot:&quot;);</span>
+<span class="fc" id="L377">        System.out.println(&quot;0 - Sulje ohjelma.&quot;);</span>
+<span class="fc" id="L378">        System.out.println(&quot;1 - Luo julkinen ja yksityinen RSA-avain.&quot;);</span>
+<span class="fc" id="L379">        System.out.println(&quot;2 - Muuta viesti luvuksi.&quot;);</span>
+<span class="fc" id="L380">        System.out.println(&quot;3 - Muuta luku viestiksi.&quot;);</span>
+<span class="fc" id="L381">        System.out.println(&quot;4 - Salaa viesti.&quot;);</span>
+<span class="fc" id="L382">        System.out.println(&quot;5 - Pura viesti.&quot;);</span>
+<span class="fc" id="L383">    }</span>
+
+    /**
+     * Tulostetaan alitason komentoon liittyvät tiedot.
+     *
+     * @param subLevel suoritettavan alitason komento kokonaislukuna.
+     */
+    public void tulostaAlikomennot(final int subLevel) {
+        // Kaikille alikomennoille yhteiset tulosteet.
+<span class="fc" id="L392">        System.out.println(&quot;\nKomennot:&quot;);</span>
+<span class="fc" id="L393">        System.out.println(&quot;0 - Palaa takaisin.&quot;);</span>
+        // Komennnoilla 0 ja 1 ei ole ylimääräisiä alisilmukan tuloksia, sillä näihin ei voida jäädä pyörimään.
+<span class="fc bfc" id="L395" title="All 2 branches covered.">        if (subLevel == 2) {</span>
+<span class="fc" id="L396">            System.out.println(&quot;Muutetaan viesti luvuksi. Muutos suoritetaan muuttamalla merkit Unicode arvoiksi.&quot;</span>
+                    + &quot; Mikäli haluat käyttää jotain muuta muutostapaa, tee se toisessa sovelluksessa ja käytä tätä&quot;
+                    + &quot; sovellusta vain purkuun ja salaukseen.&quot;);
+<span class="fc bfc" id="L399" title="All 2 branches covered.">        } else if (subLevel == 3) {</span>
+<span class="fc" id="L400">            System.out.println(&quot;Muutetaan luku viestiksi. Muutos toteutetaan tulkitsemalla luvut Unicode arvoina. &quot;</span>
+                    + &quot; Varmista, että alkuperäinen muutos on toteutettu Unicode arvoilla,&quot;
+                    + &quot; muuten tämä muutos ei ole mielekäs.&quot;);
+<span class="fc bfc" id="L403" title="All 2 branches covered.">        } else if (subLevel == 4) {</span>
+<span class="fc" id="L404">            System.out.println(&quot;Salataan viesti. Salaukseen tarvitaan julkinen avain ja osamäärä.&quot;</span>
+                    + &quot; Huomioi, että viestin oltava lukuna.&quot;);
+<span class="pc bpc" id="L406" title="1 of 2 branches missed.">        } else if (subLevel == 5) {</span>
+<span class="fc" id="L407">            System.out.println(&quot;Puretaan viesti. Purkamiseen tarvitaan yksityinen avain ja osamäärä.&quot;</span>
+                    + &quot; Huomioi, että viestin on oltava lukuna.&quot;);
+        }
+<span class="fc" id="L410">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

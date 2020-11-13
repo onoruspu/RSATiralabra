@@ -9,7 +9,7 @@ apply plugin: 'jacoco'
 apply plugin: 'application'
 apply plugin: 'checkstyle'
 
-mainClassName = 'main.Main'
+mainClassName = 'alku.Alku'
 
 checkstyle {
 	toolVersion '8.37'
@@ -33,6 +33,12 @@ jacocoTestReport {
 
 check.dependsOn jacocoTestReport
 
+javadoc {
+  options.encoding = 'UTF-8'
+  options.docEncoding = 'UTF-8'
+  options.charSet = 'UTF-8'
+}
+
 task generateRestApiDocs(type: Javadoc) {
   source = sourceSets.main.allJava
   options {
@@ -44,6 +50,6 @@ task generateRestApiDocs(type: Javadoc) {
 
 jar {
 	manifest {
-		attributes( 'Main-class': 'main.Main')
+		attributes( 'Main-class': 'alku.Alku')
 	}
 }

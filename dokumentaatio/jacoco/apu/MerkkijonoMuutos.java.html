@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MerkkijonoMuutos.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RSATiralabra</a> &gt; <a href="index.source.html" class="el_package">apu</a> &gt; <span class="el_source">MerkkijonoMuutos.java</span></div><h1>MerkkijonoMuutos.java</h1><pre class="source lang-java linenums">
+package apu;
+
+/**
+ * Työkaluja merkkijonojen käsittelyyn.
+ */
+<span class="fc" id="L7">public class MerkkijonoMuutos {</span>
+    /**
+     * Muuta merkkijonona oleva viesti Unicode-merkkien arvoiksi.
+     * Arvot palautetaan merkkijonon muodossa eikä yksittäisinä lukuina.
+     *
+     * @param message merkkijono, joka halutaan luvuksi.
+     *
+     * @return merkkijono, joka sisältää alkuperäisen merkkijonon merkit arvoina.
+     */
+    public String merkkijonoLukujenMuotoon(final String message) {
+<span class="fc" id="L17">        String numberForm = &quot;&quot;;</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        for (int i = 0; i &lt; message.length(); i++) {</span>
+<span class="fc" id="L19">            int charValue = (int) message.charAt(i); // Muutetaan merkki luvuksi.</span>
+            // Jotta voidaan tietää milloin merkki vaihtuu toiseen, muutetaan kaikki merkit 5 numeron mittaisiksi
+            // lisäämällä alkuun tarvittava määrä nollia. 5 numeroa, koska UTF-16 suurin arvo on 65535.
+            // StringBuilder olisi nopeampi, mutta tätä ei haluta käyttää.
+<span class="fc bfc" id="L23" title="All 2 branches covered.">            if (charValue == 0) {</span>
+<span class="fc" id="L24">                numberForm += &quot;00000&quot;;</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">            } else if (charValue &lt; 10) {</span>
+<span class="fc" id="L26">                numberForm += &quot;0000&quot; + charValue;</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">            } else if (charValue &lt; 100) {</span>
+<span class="fc" id="L28">                numberForm += &quot;000&quot; + charValue;</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">            } else if (charValue &lt; 1000) {</span>
+<span class="fc" id="L30">                numberForm += &quot;00&quot; + charValue;</span>
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">            } else if (charValue &lt; 10000) {</span>
+<span class="fc" id="L32">                numberForm += &quot;0&quot; + charValue;</span>
+            }
+        }
+<span class="fc" id="L35">        return numberForm;</span>
+    }
+
+    /**
+     * Muuta merkkijonona oleva luku, joka sisältää Unicode-arvoja, merkkijonoksi.
+     * Luku ei ole varsinainen luku vaan se on merkkijonon muodossa.
+     *
+     * @param message luku (merkkijono), joka halutaan merkeiksi.
+     *
+     * @return merkkijono, joka sisältää arvot muutettuina merkeiksi.
+     */
+    public String lukujenMuotoMerkkijonoksi(final String message) {
+        // Jos merkkijonossa ei ole 5:llä jaollinen määrä merkkejä, puuttuu alusta joitain nollia.
+<span class="fc" id="L48">        String messageAndZeroes = &quot;&quot;;</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        for (int i = 0; i &lt; (5 - message.length() % 5); i++) { // Vähennetään viidestä jakojäännös viidellä,</span>
+                                                               // jotta saadaan puuttuvien nollien määrä.
+<span class="fc" id="L51">            messageAndZeroes += &quot;0&quot;;</span>
+        }
+<span class="fc" id="L53">        messageAndZeroes = messageAndZeroes + message; // Lisätään mahdolliset puuttuvat nollat.</span>
+
+        // Muutetaan lukuja merkeiksi viiden paloissa.
+<span class="fc" id="L56">        String stringForm = &quot;&quot;;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        for (int i = 0; i &lt; messageAndZeroes.length(); i += 5) {</span>
+<span class="fc" id="L58">            int num1 = messageAndZeroes.charAt(i) - '0'; // '0' vähennys jotta saadaan lukuja ('0' = 48).</span>
+<span class="fc" id="L59">            int num2 = messageAndZeroes.charAt(i + 1) - '0';</span>
+<span class="fc" id="L60">            int num3 = messageAndZeroes.charAt(i + 2) - '0';</span>
+<span class="fc" id="L61">            int num4 = messageAndZeroes.charAt(i + 3) - '0';</span>
+<span class="fc" id="L62">            int num5 = messageAndZeroes.charAt(i + 4) - '0';</span>
+<span class="fc" id="L63">            String str = &quot;&quot; + num1 + num2 + num3 + num4 + num5; // Muutetaan merkkijonoksi.</span>
+<span class="fc" id="L64">            int value = merkkijonoKokonaisluvuksi(str); // Muutetaan luvuksi.</span>
+<span class="fc" id="L65">            char oneChar = (char) value; // Muutetaan merkiksi.</span>
+<span class="fc" id="L66">            stringForm += oneChar; // Lisätään merkki palauttetavaan merkkijonoon.</span>
+        }
+
+<span class="fc" id="L69">        return stringForm;</span>
+    }
+
+    /**
+     * Muuta merkkijonona oleva luku kokonaisluvuksi.
+     * Muutokset negatiivisista, erityisen suurista tai liukuluku muotoisista luvuista eivät onnistu.
+     *
+     * @param string merkkijono, joka sisältää arvoksi muutettavan luvun merkkijonona.
+     *
+     * @return kokonaisluku, jonka arvo on sama merkkijonon sisällön kanssa.
+     */
+    public int merkkijonoKokonaisluvuksi(final String string) {
+<span class="fc" id="L81">        int number = 0;</span>
+<span class="fc" id="L82">        int multiply = 1;</span>
+        // Käydään numero kerrallaan merkkijono läpi ja lisätään saatu numero tulokseen.
+        // Lopusta alkuun, jotta voidaan kasvattaa kerrointa sen pienentämisen sijaan (mielestäni intuitiivisempi tapa).
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        for (int i = string.length() - 1; i &gt; -1; i--) {</span>
+<span class="fc" id="L86">            number += (string.charAt(i) - '0') * multiply; // charAt antaa Unicode arvoja, mutta haluamme lukuja joten</span>
+                                                           // vähennetään '0' eli 48.
+<span class="fc" id="L88">            multiply *= 10; // Kysessä on desimaali luku, joten kerroin kasvaa aina kymmenellä.</span>
+        }
+<span class="fc" id="L90">        return number;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

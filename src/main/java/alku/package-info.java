@@ -1,0 +1,4 @@
+/**
+ * Ohjelman käynnistys.
+ */
+package alku;

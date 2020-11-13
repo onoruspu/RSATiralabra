@@ -1,7 +1,12 @@
 # Viikko 3
 
 ### Tehty, edistytty ja opittu
+Tein ohjelman ydintoiminnallisuutta Javan omilla metodeilla. Käytännössä siis käyttöliittymää, eli miten käyttäjä saa käyttöönsä avainten käyttöön liittyviä luokkia. Paljon tuli kirjoiteltua myös testejä, dokumentaatiota ja korjattua joitain aiempia virheitä. Päivittelin myös aiemmin tehtyjen luokkien testejä ja dokumentaatiota. Olen nyt edistynyt siihen pisteeseen kaiken muun suhteen, että voin (toivottavasti ainakin) siirtää huomioni suurimmissa määrin tietorakenteisiin. Opittua tuli kaikenlaista sekalaista, ehkä eniten sitä miten kirjoitetaan siistimpää koodia ja dokumentoidaan ja kommentoidaan sitä. Aikaa käytin noin 14-16 tuntia, joista oleellisesti suurin osa kului siis käyttöliittymään.
 
 ### Ongelmia
+Kaikenlaisia pieniä ongelmia oli aina siellä täällä, mutta se on toki osa koodausta. Palautetta kirjoittaessani ei tule kuitenkaan mieleen mitään isompaa ongelmaa eikä tällaista tainnut ollakaan. Isoin ongelma taisi olla miettiä miten muutan merkkejä lukujen muotoon ja takaisin, mutta asiahan ei ollut erityisen monimutkainen, se vain vaati ajattelua. Turhauttavimpia ongelmia tietysti on kaikki konfiguraatioihin (JavaDoc, Gradle, jne.) liittyvät ongelmat, sillä nämä eivät ole varsinaisesti asiaa vaan enemmin pakollinen välttämättömyys. En myöskään usko, että koodissani on mitään vakavampia bugeja, sillä käytin paljon aikaan oikeellisuuden tarkistamiseen ja paikoitellen jopa ylimitoitettuihin testeihin.
+
+Juuri tässä kohtaa ei ole oikeastaan mitään ongelmaa tai pulmaa mistä voisin kysyä. Hyödyllisin palaute on varmaan rohkaisu tulevaa varten. Ellei sitten löydy jotain ongelmia, mitä en ole muistanut huomioida. Kiitos.
 
 ### Seuraavaksi
+Seuraavaksi tavoitteena on siirtyä enemmän omiin tietorakenteisiin ja korvata Javan valmiita tietorakenteita näillä. Merkittävin tietorakenne tulee minulla olevaan jokin sellainen, joka pystyy käsittelemään isoja lukuja. Ryhdyn siis rakentamaan tätä ja miettimään sen yksityiskohtia tarkemmin. Yleisiä asioita tähän liittyen mietinkin jo projektin alussa. Ylipäätään tietorakenteen toimivuus on tärkeää, mutta tässä tapauksessa myös suoritusaika on hyvin tärkeä. En pidä itseäni kovin hyvänä optimoijana nopeuden suhteen, joten voisi olla syytä tutustua tällaiseen enemmän. Pitää kuitenkin vielä enemmän aiempaan liittyen miettiä avainten kokoa, tällä hetkellä kaikki luodut avaimet ovat nimittäin saman kokoisia. Käyttäjälle pitäisi kuitenkin olla mahdollisuus vaikuttaa kokoon.
