@@ -1,15 +1,14 @@
 
 package avain;
 
-import java.math.BigInteger;
-import java.util.Random;
+import tietorakenteet.SuuriLuku;
 
 /**
  * Avainten luonti.
  */
 public class AvaimenLuoja {
     /**
-     * Tämänhetkinen alkulukujen p ja q koko bitteinä.
+     * Tämänhetkinen alkulukujen p ja q koko bitteinä. Koko ei ole lopullinen.
      */
     private static final int ALKULUVUN_KOKO = 1024;
 
@@ -19,23 +18,28 @@ public class AvaimenLuoja {
      * @return Avaimen, joka sisältää julkisen ja yksityisen avaimen tiedot (n,e,d).
      */
     public Avain luoAvaimet() {
+        SuuriLuku suuriLuku = new SuuriLuku(); // Olio SuuriLuku-luokan metodien käyttämiseen.
+
         // Alkuluku p.
-        BigInteger p = BigInteger.probablePrime(ALKULUVUN_KOKO, new Random());
+        SuuriLuku p = suuriLuku.uusiAlkuluku(ALKULUVUN_KOKO);
 
         // Alkuluku q.
-        BigInteger q = BigInteger.probablePrime(ALKULUVUN_KOKO, new Random());
+        SuuriLuku q = suuriLuku.uusiAlkuluku(ALKULUVUN_KOKO);
 
         // Jakonäännös n.
-        BigInteger n = p.multiply(q);
+        SuuriLuku n = suuriLuku.kertolasku(p, q);
 
         // Fii (engl. phi).
-        BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+        SuuriLuku fii = suuriLuku.kertolasku(suuriLuku.yhdenPienempi(p), suuriLuku.yhdenPienempi(q));
 
         // e - julkinen avain
-        BigInteger e = new BigInteger("65537");
+        SuuriLuku e = suuriLuku.e();
 
         // d - yksityinen avain.
-        BigInteger d = e.modInverse(phi);
+        SuuriLuku d = suuriLuku.jakojäännösKäänteisluku(e, fii);
+
+        // Avain-luokka toimii toistaiseksi BigInteger-oliolla.
+        // return new Avain(n.getBigInt(), e.getBigInt(), d.getBigInt());
 
         return new Avain(n, e, d);
     }

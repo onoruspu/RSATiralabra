@@ -1,6 +1,6 @@
 package avain;
 
-import java.math.BigInteger;
+import tietorakenteet.SuuriLuku;
 
 /**
  * Avainten hallinta.
@@ -9,26 +9,28 @@ public class Avain {
     /**
      * Jakojäännös.
      */
-    private BigInteger n;
+    private SuuriLuku n;
 
     /**
      * Julkinen avain.
      */
-    private BigInteger e;
+    private SuuriLuku e;
 
     /**
      * Yksityinen avain.
      */
-    private BigInteger d;
+    private SuuriLuku d;
 
     /**
      * Konstruktori, jolla asetetaan avaimelle sen arvot.
      *
      * @param newN osamäärä (n).
+     *
      * @param newE julkinen avain (e).
+     *
      * @param newD yksityinen avain (d).
      */
-    public Avain(final BigInteger newN, final BigInteger newE, final BigInteger newD) {
+    public Avain(final SuuriLuku newN, final SuuriLuku newE, final SuuriLuku newD) {
         this.n = newN;
         this.e = newE;
         this.d = newD;
@@ -39,7 +41,7 @@ public class Avain {
      *
      * @return avaimen jakojäännös (n).
      */
-    public BigInteger getN() {
+    public SuuriLuku getN() {
         return this.n;
     }
 
@@ -48,7 +50,7 @@ public class Avain {
      *
      * @return julkinen avain (e).
      */
-    public BigInteger getE() {
+    public SuuriLuku getE() {
         return this.e;
     }
 
@@ -57,34 +59,34 @@ public class Avain {
      *
      * @return yksityinen avain (d).
      */
-    public BigInteger getD() {
+    public SuuriLuku getD() {
         return this.d;
     }
 
     /**
      * Aseta avaimen jakojäännös (n).
      *
-     * @param newN avaimen jakojäännös (n).
+     * @param uusiN avaimen jakojäännös (n).
      */
-    public void setN(final BigInteger newN) {
-        this.n = newN;
+    public void setN(final SuuriLuku uusiN) {
+        this.n = uusiN;
     }
 
     /**
      * Aseta julkinen avain (e).
      *
-     * @param newE julkinen avain (e).
+     * @param uusiE julkinen avain (e).
      */
-    public void setE(final BigInteger newE) {
-        this.e = newE;
+    public void setE(final SuuriLuku uusiE) {
+        this.e = uusiE;
     }
 
     /**
      * Aseta yksityinen avain (d).
      *
-     * @param newD yksityinen avain (d).
+     * @param uusiD yksityinen avain (d).
      */
-    public void setD(final BigInteger newD) {
-        this.d = newD;
+    public void setD(final SuuriLuku uusiD) {
+        this.d = uusiD;
     }
 }

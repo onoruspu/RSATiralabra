@@ -1,10 +1,10 @@
 
 package avain;
 
-import java.math.BigInteger;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import tietorakenteet.SuuriLuku;
 
 /**
  * Testiluokka AvaimenLuoja-luokalle.
@@ -26,23 +26,23 @@ public class AvaimenLuojaTest {
     private static final int PIENIN_SALLITTU_D_BITTIPITUUS = 1;
 
     /**
-     * Testi testKeyGenerator-metodille.
+     * Testi luoAvaimet-metodille.
      */
     @Test
     public void avaimenLuojaTesti() {
-        AvaimenLuoja keyGenerator = new AvaimenLuoja();
-        Avain key = keyGenerator.luoAvaimet();
-        assertFalse(key.getN().equals(new BigInteger("-1")));
-        assertFalse(key.getE().equals(new BigInteger("-1")));
-        assertFalse(key.getD().equals(new BigInteger("-1")));
-        assertFalse(key.getN().equals(new BigInteger("0")));
-        assertFalse(key.getE().equals(new BigInteger("0")));
-        assertFalse(key.getD().equals(new BigInteger("0")));
-        assertFalse(key.getN().equals(key.getE()));
-        assertFalse(key.getN().equals(key.getD()));
-        assertFalse(key.getD().equals(key.getE()));
-        assertTrue(key.getN().bitLength() > PIENIN_SALLITTU_N_BITTIPITUUS);
-        assertTrue(key.getE().bitLength() > PIENIN_SALLITTU_E_BITTIPITUUS);
-        assertTrue(key.getD().bitLength() > PIENIN_SALLITTU_D_BITTIPITUUS);
+        AvaimenLuoja avaimenLuoja = new AvaimenLuoja();
+        Avain avain = avaimenLuoja.luoAvaimet();
+        assertFalse(avain.getN().equals(new SuuriLuku("-1")));
+        assertFalse(avain.getE().equals(new SuuriLuku("-1")));
+        assertFalse(avain.getD().equals(new SuuriLuku("-1")));
+        assertFalse(avain.getN().equals(new SuuriLuku("0")));
+        assertFalse(avain.getE().equals(new SuuriLuku("0")));
+        assertFalse(avain.getD().equals(new SuuriLuku("0")));
+        assertFalse(avain.getN().equals(avain.getE()));
+        assertFalse(avain.getN().equals(avain.getD()));
+        assertFalse(avain.getD().equals(avain.getE()));
+        assertTrue(avain.getN().bittiPituus() > PIENIN_SALLITTU_N_BITTIPITUUS);
+        assertTrue(avain.getE().bittiPituus() > PIENIN_SALLITTU_E_BITTIPITUUS);
+        assertTrue(avain.getD().bittiPituus() > PIENIN_SALLITTU_D_BITTIPITUUS);
     }
 }

@@ -2,11 +2,11 @@
 package kayttoliittyma;
 
 import apu.MerkkijonoMuutos;
-import java.math.BigInteger;
 import java.util.Scanner;
 import avain.SalausPurku;
 import avain.Avain;
 import avain.AvaimenLuoja;
+import tietorakenteet.SuuriLuku;
 
 /**
  * Käyttöliittymä. Käyttäjän on mahdollista käyttöliittymän kautta käyttää sovelluksen toimnnallisuuksia.
@@ -69,14 +69,14 @@ public class Kayttoliittyma {
     public void pääSilmukka() {
         while (this.jatkaPäätasonSilmukkaa) { // Päätason silmukka.
             tulostaPääkomennot(); // Kerrotaan päätason komennot.
-            String input = lueSyöte("\nKomento: "); // Luetaan syöte.
-            if (onPääkomento(input)) {
-                int subLevel = komennonArvo(input);
-                if (subLevel == 0 || subLevel == 1) {
-                    suoritaKomento(subLevel); // Komennot 0,1, joilla ei ole mielekästä
+            String syöte = lueSyöte("\nKomento: "); // Luetaan syöte.
+            if (onPääkomento(syöte)) {
+                int aliTaso = komennonArvo(syöte);
+                if (aliTaso == 0 || aliTaso == 1) {
+                    suoritaKomento(aliTaso); // Komennot 0,1, joilla ei ole mielekästä
                                           // alemman tason silmukkaa suoritetaan suoraan.
                 } else {
-                    aliSilmukka(subLevel); // Komennot 2,3,4,5. Siirrytään alemman tason silmukkaan.
+                    aliSilmukka(aliTaso); // Komennot 2,3,4,5. Siirrytään alemman tason silmukkaan.
                 }
             } else {
                 eiPääkomento(); // Virheellinen komento.
@@ -88,13 +88,13 @@ public class Kayttoliittyma {
      * Käyttöliittymän alitason silmukka. Päätason silmukka voi kutsua alemman tason silmukoita,
      * mikäli näille on tarvetta.
      *
-     * @param subLevel arvo, joka määrittää mitä komentoa alitason silmukka suorittaa.
+     * @param aliTaso arvo, joka määrittää mitä komentoa alitason silmukka suorittaa.
      */
-    public void aliSilmukka(final int subLevel) {
+    public void aliSilmukka(final int aliTaso) {
         this.jatkaAlitasonSilmukkaa = true; // Asetetaan alempi silmukka pyörimään.
         while (this.jatkaAlitasonSilmukkaa) { // Jatketaan suoritusta kunnes käyttäjä poistuu silmukasta.
-            tulostaAlikomennot(subLevel); // Kerrotaan tietoa käyttäjälle.
-            suoritaKomento(subLevel); // Suoritetaan itse komento.
+            tulostaAlikomennot(aliTaso); // Kerrotaan tietoa käyttäjälle.
+            suoritaKomento(aliTaso); // Suoritetaan itse komento.
         }
     }
 
@@ -108,28 +108,27 @@ public class Kayttoliittyma {
      */
     public String lueSyöte(final String messageToUser) {
         System.out.print(messageToUser);
-        String input = this.syötteenLukija.nextLine();
-        return input;
+        String syöte = this.syötteenLukija.nextLine();
+        return syöte;
     }
-
 
     /**
      * Tarkistetaan onko annettu syöte päätason komento.
      *
-     * @param input käyttäjän syöte.
+     * @param syöte käyttäjän syöte.
      *
      * @return onko syöte sallittu?
      */
-    public boolean onPääkomento(final String input) {
-        if (!onEpänegatiivinenLuku(input)) {
+    public boolean onPääkomento(final String syöte) {
+        if (!onEpänegatiivinenLuku(syöte)) {
             return false;
         }
-        if (input.length() != Kayttoliittyma.PÄÄTASON_KOMENNON_PITUUS) { // Tarkista komennon pituus.
+        if (syöte.length() != Kayttoliittyma.PÄÄTASON_KOMENNON_PITUUS) { // Tarkista komennon pituus.
             return false;
         }
-        int command = Integer.valueOf(input); // Syöte luvuksi.
+        int komento = Integer.valueOf(syöte); // Syöte luvuksi.
         // Tarkista, että että komento on sallitulla välillä [0, thisPÄÄTASON_KOMENTOJEN_LUKUMÄÄRÄ-1].
-        if (command < 0 || command > Kayttoliittyma.PÄÄTASON_KOMENTOJEN_LUKUMÄÄRÄ - 1) {
+        if (komento < 0 || komento > Kayttoliittyma.PÄÄTASON_KOMENTOJEN_LUKUMÄÄRÄ - 1) {
             return false;
         }
         return true;
@@ -138,18 +137,18 @@ public class Kayttoliittyma {
     /**
      * Tarkistetaan onko annettu syöte epänegatiivinen numero.
      *
-     * @param input käyttäjän syöte.
+     * @param syöte käyttäjän syöte.
      *
      * @return onko syöte epänegatiivinen numero?
      */
-    public boolean onEpänegatiivinenLuku(final String input) {
-        if (input == null) { // Tarkista, että viittaus on aito.
+    public boolean onEpänegatiivinenLuku(final String syöte) {
+        if (syöte == null) { // Tarkista, että viittaus on aito.
             return false;
         }
-        if (input.length() <= 0) { // Tarkista pituus.
+        if (syöte.length() <= 0) { // Tarkista pituus.
             return false;
         }
-        if (!sisältääVainNumeroita(input)) { // Tarkista, että syöte koostuu numeroista.
+        if (!sisältääVainNumeroita(syöte)) { // Tarkista, että syöte koostuu numeroista.
             return false;
         }
         return true;
@@ -158,12 +157,12 @@ public class Kayttoliittyma {
     /**
      * Tarkistetaan onko annettu syöte positiivinen numero.
      *
-     * @param input käyttäjän syöte.
+     * @param syöte käyttäjän syöte.
      *
      * @return onko syöte positiivinen numero?
      */
-    public boolean onPositiivinenLuku(final String input) {
-        if (onEpänegatiivinenLuku(input) && !input.equals("0")) {
+    public boolean onPositiivinenLuku(final String syöte) {
+        if (onEpänegatiivinenLuku(syöte) && !syöte.equals("0")) {
             // Jos syöte ei ole epänegatiivinen numero eikä nolla, on se positiivinen.
             return true;
         }
@@ -173,13 +172,13 @@ public class Kayttoliittyma {
     /**
      * Tarkistetaan, että syöte sisältää vain numeroita.
      *
-     * @param input käyttäjän syöte.
+     * @param syöte käyttäjän syöte.
      *
      * @return onko syötteessä vain numeroita?
      */
-    public boolean sisältääVainNumeroita(final String input) {
-        for (int i = 0; i < input.length(); i++) { // Tarkista, että syötteessä on vain numeroita.
-            if (!Character.isDigit(input.charAt(i))) {
+    public boolean sisältääVainNumeroita(final String syöte) {
+        for (int i = 0; i < syöte.length(); i++) { // Tarkista, että syötteessä on vain numeroita.
+            if (!Character.isDigit(syöte.charAt(i))) {
                 return false;
             }
         }
@@ -197,32 +196,32 @@ public class Kayttoliittyma {
     /**
      * Kerätään syötteestä tieto siitä mitä komentoa halutaan suorittaa.
      *
-     * @param input komento tekstimuodossa.
+     * @param syöte komento tekstimuodossa.
      *
      * @return komennon numero kokonaislukuna.
      */
-    public int komennonArvo(final String input) {
+    public int komennonArvo(final String syöte) {
         // Syötteen tarkistuksen tulisi estää, että muunnos kokonaisluvuksi ei epäonnistu koskaan.
-        return Integer.valueOf(input);
+        return Integer.valueOf(syöte);
     }
 
     /**
      * Suorita komento.
      *
-     * @param command komennon numero kokonaislukuna.
+     * @param komento komennon numero kokonaislukuna.
      */
-    public void suoritaKomento(final int command) {
-        if (command == 0) {
+    public void suoritaKomento(final int komento) {
+        if (komento == 0) {
             sulje();
-        } else if (command == 1) {
+        } else if (komento == 1) {
             luoAvaimet();
-        } else if (command == 2) {
+        } else if (komento == 2) {
             viestiLukujenMuotoon();
-        } else if (command == 3) {
+        } else if (komento == 3) {
             lukuViestinMuotoon();
-        } else if (command == 4) {
+        } else if (komento == 4) {
             salaus();
-        } else if (command == 5) {
+        } else if (komento == 5) {
             purku();
         }
     }
@@ -240,27 +239,27 @@ public class Kayttoliittyma {
      * Luodaan julkinen ja yksityinen RSA avain ja kerrotaan nämä käyttäjälle.
      */
     public void luoAvaimet() {
-        AvaimenLuoja keyGen = new AvaimenLuoja();
-        Avain key = keyGen.luoAvaimet();
+        AvaimenLuoja avaimenLuoja = new AvaimenLuoja();
+        Avain avain = avaimenLuoja.luoAvaimet();
         System.out.println("Luodun avaimen arvot:");
         System.out.print("n: ");
-        System.out.println(key.getN());
+        System.out.println(avain.getN().merkkijonoksi());
         System.out.print("e: ");
-        System.out.println(key.getE());
+        System.out.println(avain.getE().merkkijonoksi());
         System.out.print("d: ");
-        System.out.println(key.getD());
+        System.out.println(avain.getD().merkkijonoksi());
     }
 
     /**
      * Muutetaan viesti numeroiksi ja kerrotaan tulos käyttäjälle.
      */
     public void viestiLukujenMuotoon() {
-        String input = lueSyöte("Luvuksi muutettava viesti: ");
-        if (tarkistaPaluu(input)) { // Tarkistetaan haluaako käyttäjä poistua.
+        String syöte = lueSyöte("Luvuksi muutettava viesti: ");
+        if (tarkistaPaluu(syöte)) { // Tarkistetaan haluaako käyttäjä poistua.
             return;
         }
         MerkkijonoMuutos stringConvert = new MerkkijonoMuutos();
-        String numberForm = stringConvert.merkkijonoLukujenMuotoon(input);
+        String numberForm = stringConvert.merkkijonoLukujenMuotoon(syöte);
         System.out.println("Viesti lukuna:\n" + numberForm);
         System.out.println("Riippuen (konsolin) konfiguraatioista ei kaikkia merkkejä välttämättä saada muutettua."
                 + " Tarkista, että alla oleva tulostus on järkevä. Mikäli ei ole, muuta käyttämiäsi merkkejä.");
@@ -272,13 +271,13 @@ public class Kayttoliittyma {
      * Muutetaan merkkijonona olevat numerot merkeiksi ja kerrotaan tulos käyttäjälle.
      */
     public void lukuViestinMuotoon() {
-        String input = lueSyöte("Viestiksi muutettava luku: ");
-        if (tarkistaPaluu(input)) { // Tarkistetaan haluaako käyttäjä poistua.
+        String syöte = lueSyöte("Viestiksi muutettava luku: ");
+        if (tarkistaPaluu(syöte)) { // Tarkistetaan haluaako käyttäjä poistua.
             return;
         }
-        if (onPositiivinenLuku(input)) {
+        if (onPositiivinenLuku(syöte)) {
             MerkkijonoMuutos stringConvert = new MerkkijonoMuutos();
-            String messageForm = stringConvert.lukujenMuotoMerkkijonoksi(input);
+            String messageForm = stringConvert.lukujenMuotoMerkkijonoksi(syöte);
             System.out.println("Luku viestinä:\n" + messageForm);
             this.jatkaAlitasonSilmukkaa = false; // Palataan pääsilmukkaan.
         } else {
@@ -293,27 +292,27 @@ public class Kayttoliittyma {
     public void salaus() {
         // Haluamme sallia käyttäjälle poistumisen kaikissa kohdissa.
         // Tämän takia jokaisen syötteen jälkeen on tarkistus.
-        String inputNumber = lueSyöte("Anna viesti (numeroina): ");
-        if (tarkistaPaluu(inputNumber)) { // Tarkistetaan haluaako käyttäjä poistua.
+        String syöteLuku = lueSyöte("Anna salattava viesti (numeroina): ");
+        if (tarkistaPaluu(syöteLuku)) { // Tarkistetaan haluaako käyttäjä poistua.
             return;
         }
 
-        String inputE = lueSyöte("Anna julkinen avain (e): ");
-        if (tarkistaPaluu(inputE)) { // Tarkistetaan haluaako käyttäjä poistua.
+        String syöteE = lueSyöte("Anna julkinen avain (e): ");
+        if (tarkistaPaluu(syöteE)) { // Tarkistetaan haluaako käyttäjä poistua.
             return;
         }
 
-        String inputN = lueSyöte("Anna osamäärä (n): ");
-        if (tarkistaPaluu(inputN)) { // Tarkistetaan haluaako käyttäjä poistua.
+        String syöteN = lueSyöte("Anna osamäärä (n): ");
+        if (tarkistaPaluu(syöteN)) { // Tarkistetaan haluaako käyttäjä poistua.
             return;
         }
 
         // Tarkistetaan syöte
-        if (onPositiivinenLuku(inputNumber) && onPositiivinenLuku(inputN) && onPositiivinenLuku(inputE)) {
-            SalausPurku deencode = new SalausPurku(); // Uusi salausolio.
-            Avain key = new Avain(new BigInteger(inputN), new BigInteger(inputE), new BigInteger("0")); // Uusi avain.
-            String encoded = deencode.salaus(key, new BigInteger(inputNumber)); // Varsinainen salaus.
-            System.out.println("Viesti salatussa muodossa:\n" + encoded); // Kerrotaan käyttäjälle.
+        if (onPositiivinenLuku(syöteLuku) && onPositiivinenLuku(syöteN) && onPositiivinenLuku(syöteE)) {
+            SalausPurku salausPurku = new SalausPurku(); // Uusi salausolio.
+            Avain avain = new Avain(new SuuriLuku(syöteN), new SuuriLuku(syöteE), new SuuriLuku("0")); // Uusi avain.
+            String salattu = salausPurku.salaus(avain, new SuuriLuku(syöteLuku)); // Varsinainen salaus.
+            System.out.println("Viesti salatussa muodossa:\n" + salattu); // Kerrotaan käyttäjälle.
             this.jatkaAlitasonSilmukkaa = false; // Poistutaan alemman tason silmukasta.
         } else {
             System.out.println("Virheellinen syöte. Onhan syöte positiivinen luku?");
@@ -326,27 +325,27 @@ public class Kayttoliittyma {
     public void purku() {
         // Haluamme sallia käyttäjälle poistumisen kaikissa kohdissa.
         // Tämän takia jokaisen syötteen jälkeen on tarkistus.
-        String inputNumber = lueSyöte("Anna viesti (numeroina): ");
-        if (tarkistaPaluu(inputNumber)) { // Tarkistetaan haluaako käyttäjä poistua.
+        String syöteLuku = lueSyöte("Anna salattu viesti (numeroina): ");
+        if (tarkistaPaluu(syöteLuku)) { // Tarkistetaan haluaako käyttäjä poistua.
             return;
         }
 
-        String inputN = lueSyöte("Anna osamäärä (n): ");
-        if (tarkistaPaluu(inputN)) { // Tarkistetaan haluaako käyttäjä poistua.
+        String syöteN = lueSyöte("Anna osamäärä (n): ");
+        if (tarkistaPaluu(syöteN)) { // Tarkistetaan haluaako käyttäjä poistua.
             return;
         }
 
-        String inputD = lueSyöte("Anna yksityinen avain (d): ");
-        if (tarkistaPaluu(inputD)) { // Tarkistetaan haluaako käyttäjä poistua.
+        String syöteD = lueSyöte("Anna yksityinen avain (d): ");
+        if (tarkistaPaluu(syöteD)) { // Tarkistetaan haluaako käyttäjä poistua.
             return;
         }
 
         // Tarkistetaan syöte
-        if (onPositiivinenLuku(inputNumber) && onPositiivinenLuku(inputN) && onPositiivinenLuku(inputD)) {
-            SalausPurku deencode = new SalausPurku(); // Uusi purkuolio.
-            Avain key = new Avain(new BigInteger(inputN), new BigInteger("0"), new BigInteger(inputD)); // Uusi avain.
-            String decoded = deencode.purku(key, new BigInteger(inputNumber)); // Varsinainen purku.
-            System.out.println("Viesti puretussa muodossa:\n" + decoded); // Kerrotaan käyttäjälle.
+        if (onPositiivinenLuku(syöteLuku) && onPositiivinenLuku(syöteN) && onPositiivinenLuku(syöteD)) {
+            SalausPurku salausPurku = new SalausPurku(); // Uusi purkuolio.
+            Avain avain = new Avain(new SuuriLuku(syöteN), new SuuriLuku("0"), new SuuriLuku(syöteD)); // Uusi avain.
+            String purettu = salausPurku.purku(avain, new SuuriLuku(syöteLuku)); // Varsinainen purku.
+            System.out.println("Viesti puretussa muodossa:\n" + purettu); // Kerrotaan käyttäjälle.
             this.jatkaAlitasonSilmukkaa = false; // Poistutaan alemman tason silmukasta.
         } else {
             System.out.println("Virheellinen syöte. Onhan syöte positiivinen luku?");
@@ -356,12 +355,12 @@ public class Kayttoliittyma {
     /**
      * Tarkistetaan haluaako käyttäjä palata takaisin päätasolle.
      *
-     * @param input käyttäjän syöte.
+     * @param syöte käyttäjän syöte.
      *
      * @return palataanko takaisin päätasolle?
      */
-    public boolean tarkistaPaluu(final String input) {
-        if (input.equals("0")) {
+    public boolean tarkistaPaluu(final String syöte) {
+        if (syöte.equals("0")) {
             System.out.println("Palataan takaisin.");
             this.jatkaAlitasonSilmukkaa = false;
             return true;
@@ -385,25 +384,25 @@ public class Kayttoliittyma {
     /**
      * Tulostetaan alitason komentoon liittyvät tiedot.
      *
-     * @param subLevel suoritettavan alitason komento kokonaislukuna.
+     * @param aliTaso suoritettavan alitason komento kokonaislukuna.
      */
-    public void tulostaAlikomennot(final int subLevel) {
+    public void tulostaAlikomennot(final int aliTaso) {
         // Kaikille alikomennoille yhteiset tulosteet.
         System.out.println("\nKomennot:");
         System.out.println("0 - Palaa takaisin.");
         // Komennnoilla 0 ja 1 ei ole ylimääräisiä alisilmukan tuloksia, sillä näihin ei voida jäädä pyörimään.
-        if (subLevel == 2) {
+        if (aliTaso == 2) {
             System.out.println("Muutetaan viesti luvuksi. Muutos suoritetaan muuttamalla merkit Unicode arvoiksi."
                     + " Mikäli haluat käyttää jotain muuta muutostapaa, tee se toisessa sovelluksessa ja käytä tätä"
                     + " sovellusta vain purkuun ja salaukseen.");
-        } else if (subLevel == 3) {
+        } else if (aliTaso == 3) {
             System.out.println("Muutetaan luku viestiksi. Muutos toteutetaan tulkitsemalla luvut Unicode arvoina. "
                     + " Varmista, että alkuperäinen muutos on toteutettu Unicode arvoilla,"
                     + " muuten tämä muutos ei ole mielekäs.");
-        } else if (subLevel == 4) {
+        } else if (aliTaso == 4) {
             System.out.println("Salataan viesti. Salaukseen tarvitaan julkinen avain ja osamäärä."
                     + " Huomioi, että viestin oltava lukuna.");
-        } else if (subLevel == 5) {
+        } else if (aliTaso == 5) {
             System.out.println("Puretaan viesti. Purkamiseen tarvitaan yksityinen avain ja osamäärä."
                     + " Huomioi, että viestin on oltava lukuna.");
         }

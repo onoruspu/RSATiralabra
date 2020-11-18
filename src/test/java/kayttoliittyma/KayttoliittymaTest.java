@@ -182,7 +182,7 @@ public class KayttoliittymaTest {
         assertTrue(outContent.toString().contains("Komennot:"));
         assertTrue(outContent.toString().contains("0 - Palaa takaisin."));
         assertTrue(outContent.toString().contains("Salataan viesti."));
-        assertTrue(outContent.toString().contains("Anna viesti (numeroina):"));
+        assertTrue(outContent.toString().contains("Anna salattava viesti (numeroina):"));
         assertTrue(outContent.toString().contains("Anna julkinen avain (e):"));
         assertTrue(outContent.toString().contains("Anna osamäärä (n):"));
         assertTrue(outContent.toString().contains("Viesti salatussa muodossa:"));
@@ -198,7 +198,7 @@ public class KayttoliittymaTest {
 
         Kayttoliittyma uI2 = new Kayttoliittyma(new Scanner("4\n0\n0")); // Syötteenä "4" "0" "0".
         uI2.käynnistä();
-        assertTrue(outContent.toString().contains("Anna viesti (numeroina):"));
+        assertTrue(outContent.toString().contains("Anna salattava viesti (numeroina):"));
         assertTrue(outContent.toString().contains("Palataan takaisin."));
         assertTrue(outContent.toString().contains("Komennot:"));
         assertTrue(outContent.toString().contains("Suljetaan ohjelma."));
@@ -262,7 +262,7 @@ public class KayttoliittymaTest {
         assertTrue(outContent.toString().contains("Komennot:"));
         assertTrue(outContent.toString().contains("0 - Palaa takaisin."));
         assertTrue(outContent.toString().contains("Puretaan viesti."));
-        assertTrue(outContent.toString().contains("Anna viesti (numeroina):"));
+        assertTrue(outContent.toString().contains("Anna salattu viesti (numeroina):"));
         assertTrue(outContent.toString().contains("Anna osamäärä (n):"));
         assertTrue(outContent.toString().contains("Anna yksityinen avain (d):"));
         assertTrue(outContent.toString().contains("Viesti puretussa muodossa:"));
@@ -272,7 +272,7 @@ public class KayttoliittymaTest {
 
         Kayttoliittyma uI2 = new Kayttoliittyma(new Scanner("5\n0\n0")); // Syötteenä "5" "0" "0".
         uI2.käynnistä();
-        assertTrue(outContent.toString().contains("Anna viesti (numeroina):"));
+        assertTrue(outContent.toString().contains("Anna salattu viesti (numeroina):"));
         assertTrue(outContent.toString().contains("Palataan takaisin."));
         assertTrue(outContent.toString().contains("Komennot:"));
         assertTrue(outContent.toString().contains("Suljetaan ohjelma."));

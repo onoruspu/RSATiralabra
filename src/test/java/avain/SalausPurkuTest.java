@@ -1,9 +1,9 @@
 
 package avain;
 
-import java.math.BigInteger;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import tietorakenteet.SuuriLuku;
 
 /**
  * Testiluokka SalausPurku-luokalle.
@@ -17,15 +17,15 @@ public class SalausPurkuTest {
     /**
      * Testaukseen käytettävä avain.
      */
-    private final Avain key = new Avain(new BigInteger("20287588197917022692777001729893044731602908844137722"
+    private final Avain avain = new Avain(new SuuriLuku("20287588197917022692777001729893044731602908844137722"
             + "8496882840395933124874002868747457557369812619471204630156874129171487454323132162466699532943"
             + "4628551552086347251794362627261566024251617349197561370938343354322747610985963686841137385307"
             + "3401193304526667978400863661267249859844260608131935642616033056755511252844196397579115245796"
             + "7378436085119609328955886659333253287574176340606942532984136029482839603958855384526214510083"
             + "5291781234009632282711933960752912315323422138360715026017665776978473800715545473814121724305"
             + "6244214636402043332626603989456955512537532415826129276463308343824355150435637297443628857283"),
-                new BigInteger("65537"),
-                new BigInteger("16031766867295187271865177572812775891557182143354876308993492868555137"
+                new SuuriLuku("65537"),
+                new SuuriLuku("16031766867295187271865177572812775891557182143354876308993492868555137"
                         + "7147256276142668712919804473042620452434416501757208352105538727161571358341"
                         + "2270596095808472127548991349974048901078276559769176279651584051406392969244"
                         + "1227608498354219400008764515436037779169054551678740299242785184468999420105"
@@ -34,6 +34,7 @@ public class SalausPurkuTest {
                         + "7853425211675556845006293444859298234124669271970589773988473503203992554407"
                         + "9563200250024297557783770344974305325464589589115909445678004909380738314660"
                         + "93346714319833"));
+
     /**
      * Testaukseen käytettävä purettu arvo.
      */
@@ -55,7 +56,7 @@ public class SalausPurkuTest {
      */
     @Test
     public void salausTesti() {
-        assertEquals(this.salattu, this.salausPurku.salaus(this.key, new BigInteger(this.purettu)));
+        assertEquals(this.salattu, this.salausPurku.salaus(this.avain, new SuuriLuku(this.purettu)));
     }
 
     /**
@@ -63,6 +64,6 @@ public class SalausPurkuTest {
      */
     @Test
     public void purkuTesti() {
-        assertEquals(this.purettu, this.salausPurku.purku(this.key, new BigInteger(this.salattu)));
+        assertEquals(this.purettu, this.salausPurku.purku(this.avain, new SuuriLuku(this.salattu)));
     }
 }
