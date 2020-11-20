@@ -21,6 +21,6 @@ public final class Alku {
      * @param args parametreja ei huomioida. Sovelluksen käyttö tapahtuu käyttöliittymän kautta.
      */
     public static void main(final String[] args) {
-        new Kayttoliittyma().käynnistä(); // Käynnistetään käyttöliittymä.
+        //new Kayttoliittyma().käynnistä(); // Käynnistetään käyttöliittymä.
     }
 }

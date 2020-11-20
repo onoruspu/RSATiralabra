@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SuuriLuku.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RSATiralabra</a> &gt; <a href="index.source.html" class="el_package">tietorakenteet</a> &gt; <span class="el_source">SuuriLuku.java</span></div><h1>SuuriLuku.java</h1><pre class="source lang-java linenums">
+/*
+ * SuuriLuku-olion tarkoituksena on tarjota toiminallisuus suurien lukujen käsittelyyn.
+ * Tavoitteena olisi, että SuuriLuku-olio voisi korvata Javan BigInteger-toteutuksen.
+ * Tällä hetkellä BigInteger on leivottu SuuriLuku-luokan sisään, jotta voidaan varmistua
+ * että kaikki toimnallisuudet ovat aina olemassa, mutta luodessa uusia toiminallisuuksia
+ * ei jatkuvasti tarvitse korvata BigInteger toteutuksia muissa luokissa.
+ */
+
+package tietorakenteet;
+
+import apu.Taulukko;
+import java.math.BigInteger; // Katso ylempää, miksi näin tehdään.
+                             // Tavotteena olisi niin laaja toteutus, että importtia ei tarvita.
+import java.util.Random; // Satunnaisuus tarvitaan alkulukujen luontiin.
+                         // Myöhemmin tarkoitus korvata omalla toteutuksella.
+
+public class SuuriLuku {
+    /**
+     * Numerot, joista luku muodstoo. Kantalukuna on 10.
+     */
+    private int[] numerot;
+
+    /**
+     * SuuriLuku-olion sisään leivottu BigInteger-olio. Riittävän laajalla toteutuksella tämä käy tarpeettomaksi.
+     */
+    private BigInteger bigInt;
+
+    /**
+     * Tämänhetkinen alkuluku e:n arvo.
+     */
+    private static final int PRIME_E = 65537;
+
+    /**
+     * Tyhjä konstruktori.
+     */
+<span class="fc" id="L37">    public SuuriLuku() {</span>
+<span class="fc" id="L38">    }</span>
+
+    /**
+     * Konstruktori, jossa merkkijono antaa SuuriLuku-olion numeerisen arvon.
+     *
+     * @param lukuMerkkijonona Sisältää numeerisen arvon merkkijonon muodossaa.
+     */
+<span class="fc" id="L45">    public SuuriLuku(final String lukuMerkkijonona) {</span>
+<span class="fc" id="L46">        this.numerot = new int[lukuMerkkijonona.length()];</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        for (int i = 0; i &lt; lukuMerkkijonona.length(); i++) {</span>
+<span class="fc" id="L48">            this.numerot[i] = lukuMerkkijonona.charAt(i) - '0'; // charAt antaa ASCII-arvoja(?), joten</span>
+                                                                // Vähennetään '0' saadaksemme numeerisia arvoja.
+        }
+<span class="fc" id="L51">        päivitäBigInt();</span>
+<span class="fc" id="L52">    }</span>
+
+    // TODO - korvaa omalla toteutuksella.
+    /**
+     * Luo uusi todennäköinen alkuluku, jonka pituus saadaan parametrina.
+     *
+     * @param alkuluvunKoko Alkuluvun bittipituus.
+     *
+     * @return SuuriLuku, joka on todennäköinen alkuluku.
+     */
+    public SuuriLuku uusiAlkuluku(final int alkuluvunKoko) {
+<span class="fc" id="L63">        return new SuuriLuku(BigInteger.probablePrime(alkuluvunKoko, new Random()).toString());</span>
+    }
+
+    // TODO - korvaa omalla toteutuksella.
+    /**
+     * Kertolasku kahdelle SuurelleLuvulle.
+     *
+     * @param kerrottava Mikä kerrotaan.
+     *
+     * @param kertoja Millä kerrotaan.
+     *
+     * @return Kertolaskun tulos.
+     */
+    public SuuriLuku kertolasku(final SuuriLuku kerrottava, final SuuriLuku kertoja) {
+<span class="fc" id="L77">        return new SuuriLuku(kerrottava.bigInt.multiply(kertoja.bigInt).toString());</span>
+    }
+
+    /**
+     * Vähennetään SuuriLuku-olion arvosta yksi (1).
+     * Negatiiviset luvut eivät kuitenkaan ole sallittuja.
+     */
+    public void yhdenPienempi() {
+        // Mikäli ollaan jo nollassa, ei mitään tarvitse tehdä.
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (!this.samaLukuArvo(new SuuriLuku(&quot;0&quot;))) {</span>
+<span class="fc" id="L87">            int viimeinenIndeksi = this.numerot.length - 1; // Tarpeeton muuttuja, mutta helpottaa koodin lukua.</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">            if (this.numerot[viimeinenIndeksi] == 0) { // Mikäli viimeinen numero on nolla, tulee miettiä sen</span>
+                                                       // vähentämisen vaikutuksia muihinkin numeroihin.
+<span class="fc" id="L90">                int eiNollatLaskuri = 1; // Pidetään kirjaa muista kuin nollien määräst.</span>
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">                for (int i = 1; i &lt; this.numerot.length; i++) { // i=1, sillä viimeinen arvo on jo tarkistettu yllä.</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">                    if (this.numerot[this.numerot.length - 1 - i] != 0) {</span>
+<span class="fc" id="L93">                        break; // Jos löytyy yksikin ei-nolla, ei tarkistusta tarvitse enään jatkaa.</span>
+                    } else {
+<span class="fc" id="L95">                        eiNollatLaskuri++;</span>
+                    }
+                }
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">                if (eiNollatLaskuri != this.numerot.length) { // Mikäli tämä olisi tosi, olisi kaikki luvut nollia,</span>
+                                                              // jolloin emme halua vähentää mitään.
+<span class="fc bfc" id="L100" title="All 2 branches covered.">                    for (int i = 0; i &lt; eiNollatLaskuri; i++) { // Asetetaan kaikki nollat yhdeksään (10-1=9).</span>
+<span class="fc" id="L101">                        this.numerot[this.numerot.length - 1 - i] = 9;</span>
+                    }
+<span class="fc" id="L103">                    this.numerot[this.numerot.length - 1 - eiNollatLaskuri] -= 1; // Korjataan nollien jälkeinen numero.</span>
+                }
+<span class="fc" id="L105">            } else {</span>
+<span class="fc" id="L106">                this.numerot[viimeinenIndeksi] -= 1; // Triviaali tapaus, kun viimeinen luku ei ole nolla.</span>
+            }
+<span class="fc bfc" id="L108" title="All 2 branches covered.">            if (this.numerot[0] == 0) {</span>
+<span class="fc" id="L109">                this.poistaAlunNollat(); // Siivotaan nollat alusta.</span>
+            }
+<span class="fc" id="L111">            päivitäBigInt(); // Pidetään bigInt ajan tasalla.</span>
+        }
+<span class="fc" id="L113">    }</span>
+
+    /**
+     * Palauta SuuriLuku-olion sisäinen BigInteger-olio.
+     *
+     * @return BigInteger-olio, jonka arvo vastaa SuuriLuku-olion arvoa.
+     */
+    // Metodi on yksityinen, sillä muilla luokilla ei tarvitse olla pääsyä BigInteger-olioon.
+    private BigInteger getBigInt() {
+<span class="fc" id="L122">        return this.bigInt;</span>
+    }
+
+    // TODO - korvaa omalla toteutuksella.
+    /**
+     * Palautetaan alkuluku e.
+     *
+     * @return alkuluku e.
+     */
+    public SuuriLuku e() {
+<span class="fc" id="L132">        return new SuuriLuku(new BigInteger(&quot;&quot; + PRIME_E).toString());</span>
+    }
+
+    // TODO - korvaa omalla toteutuksella.
+    /**
+     * Palautetaan SuuriLuku-olion käänteisluvun jakojäännös.
+     *
+     * @param käsiteltäväLuku Luku, josta halutaan jakojäännösKäänteisluku.
+     *
+     * @param jakojäännös Luku, joka toimii jakojäännöksen laskussa.
+     *
+     * @return Käänteisluvun jakojäännös.
+     */
+    public SuuriLuku jakojäännösKäänteisluku(final SuuriLuku käsiteltäväLuku, final SuuriLuku jakojäännös) {
+<span class="fc" id="L146">        return new SuuriLuku(käsiteltäväLuku.getBigInt().modInverse(jakojäännös.getBigInt()).toString());</span>
+    }
+
+    // TODO - korvaa omalla toteutuksella.
+    /**
+     * Palautetaan luvun potenssin jakojäännös.
+     *
+     * @param eksponentti Laskun potenssi.
+     *
+     * @param jakojäännös Laskun jakaja.
+     *
+     * @return Luvun potenssin jakojäännös.
+     */
+    public SuuriLuku jakojäännösPotenssi(final SuuriLuku eksponentti, final SuuriLuku jakojäännös) {
+<span class="fc" id="L160">        return new SuuriLuku(this.getBigInt().modPow(eksponentti.getBigInt(), jakojäännös.getBigInt()).toString());</span>
+    }
+
+    // TODO - korvaa omalla toteutuksella.
+    /**
+     * Palautetaan SuuriLuku-olion binäärisen arvon pituus.
+     *
+     * @return Kokonaisluku bittipituus.
+     */
+    public int bittiPituus() {
+<span class="fc" id="L170">        return this.getBigInt().bitLength();</span>
+    }
+
+    // TODO - korvaa omalla toteutuksella.
+    /**
+     * Tieto siitä, onko lukujen numeerinen arvo identtinen.
+     *
+     * @param verrattava Luku, jota verrataan.
+     *
+     * @return Totuusarvo siitä ovatko lukujen arvot samat.
+     */
+    public boolean samaLukuArvo(final SuuriLuku verrattava) {
+<span class="fc" id="L182">        return this.getBigInt().equals(verrattava.getBigInt());</span>
+    }
+
+    /**
+     * Palauta SuuriLuku-olion numeerinen arvo merkkijonona. Kantalukuna on 10.
+     *
+     * @return Merkkijono numeerisesta arvosta.
+     */
+    public String merkkijonoksi() {
+<span class="fc" id="L191">        String s = &quot;&quot;; // StringBuilder olisi nopeampi, mutta haluamme välttää valmiita luokkia.</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        for (int i = 0; i &lt; numerot.length; i++) {</span>
+<span class="fc" id="L193">            s += this.numerot[i];</span>
+        }
+<span class="fc" id="L195">        return s;</span>
+    }
+
+    /**
+     * Poistetaan luvun alussa olevat numeerisesti tarpeettomat nollat (00001 = 1).
+     */
+    public void poistaAlunNollat() {
+<span class="fc" id="L202">        int nollaLaskuri = 0; // Pidetään kirjaa nollien määrästä.</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">        for (int i = 0; i &lt; numerot.length; i++) {</span>
+<span class="pc bpc" id="L204" title="1 of 2 branches missed.">            if (numerot[i] == 0) {</span>
+<span class="fc" id="L205">                nollaLaskuri++;</span>
+            } else {
+                break; // Silmukka voidaan lopettaa, mikäli löydetään yksi ei-nolla.
+            }
+        }
+<span class="pc bpc" id="L210" title="1 of 2 branches missed.">        if (nollaLaskuri == numerot.length) {</span>
+            // Poikkeustilanteessa kaikki numerot ovat nollia, jolloin palautamme nollan.
+<span class="fc" id="L212">            this.numerot = new int[]{0};</span>
+        } else {
+<span class="nc" id="L214">            Taulukko taulukko = new Taulukko(); // Apuolio.</span>
+<span class="nc" id="L215">            this.numerot = taulukko.kopioiTaulukkoVälillä(numerot, nollaLaskuri, numerot.length - 1);</span>
+        }
+<span class="fc" id="L217">        päivitäBigInt(); // PÄivitetään bigInt-arvo.</span>
+<span class="fc" id="L218">    }</span>
+
+    /**
+     * Päivitetään BigInteger samaan numeriseen arvoon kuin SuuriLuvun numerot.
+     * Mikäli muutetaan numeroita, tulee pitää myös BigInteger-olion arvo samana,
+     * jotta voidaan pitää kumpikin tietorakenne samassa arvossa.
+     */
+    // Metodi on puhtaasti luokan sisäinen, joten se on määritetty yksityiseksi.
+    private void päivitäBigInt() {
+<span class="fc" id="L227">        this.bigInt = new BigInteger(this.merkkijonoksi());</span>
+<span class="fc" id="L228">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

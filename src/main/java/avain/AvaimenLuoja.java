@@ -30,7 +30,9 @@ public class AvaimenLuoja {
         SuuriLuku n = suuriLuku.kertolasku(p, q);
 
         // Fii (engl. phi).
-        SuuriLuku fii = suuriLuku.kertolasku(suuriLuku.yhdenPienempi(p), suuriLuku.yhdenPienempi(q));
+        p.yhdenPienempi();
+        q.yhdenPienempi();
+        SuuriLuku fii = suuriLuku.kertolasku(p, q);
 
         // e - julkinen avain
         SuuriLuku e = suuriLuku.e();

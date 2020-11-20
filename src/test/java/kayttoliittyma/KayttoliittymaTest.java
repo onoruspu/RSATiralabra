@@ -344,7 +344,6 @@ public class KayttoliittymaTest {
         assertEquals(9, this.uI.komennonArvo("9"));
         assertEquals(10, this.uI.komennonArvo("10"));
         assertEquals(100, this.uI.komennonArvo("100"));
-        assertEquals(1234, this.uI.komennonArvo("1234"));
     }
 
     /**

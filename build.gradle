@@ -1,13 +1,15 @@
 plugins {
 	id 'java'
+	id 'application'
 	id 'checkstyle'
 	id 'jacoco'
 }
 
 apply plugin: 'java'
-apply plugin: 'jacoco'
 apply plugin: 'application'
 apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
+
 
 mainClassName = 'alku.Alku'
 
@@ -53,3 +55,11 @@ jar {
 		attributes( 'Main-class': 'alku.Alku')
 	}
 }
+
+run {
+    standardInput = System.in
+	standardOutput = System.out
+}
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"

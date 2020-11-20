@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Avain.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RSATiralabra</a> &gt; <a href="index.source.html" class="el_package">avain</a> &gt; <span class="el_source">Avain.java</span></div><h1>Avain.java</h1><pre class="source lang-java linenums">package avain;
 
-import java.math.BigInteger;
+import tietorakenteet.SuuriLuku;
 
 /**
  * Avainten hallinta.
@@ -9,38 +9,40 @@ public class Avain {
     /**
      * Jakojäännös.
      */
-    private BigInteger n;
+    private SuuriLuku n;
 
     /**
      * Julkinen avain.
      */
-    private BigInteger e;
+    private SuuriLuku e;
 
     /**
      * Yksityinen avain.
      */
-    private BigInteger d;
+    private SuuriLuku d;
 
     /**
      * Konstruktori, jolla asetetaan avaimelle sen arvot.
      *
      * @param newN osamäärä (n).
+     *
      * @param newE julkinen avain (e).
+     *
      * @param newD yksityinen avain (d).
      */
-<span class="fc" id="L31">    public Avain(final BigInteger newN, final BigInteger newE, final BigInteger newD) {</span>
-<span class="fc" id="L32">        this.n = newN;</span>
-<span class="fc" id="L33">        this.e = newE;</span>
-<span class="fc" id="L34">        this.d = newD;</span>
-<span class="fc" id="L35">    }</span>
+<span class="fc" id="L33">    public Avain(final SuuriLuku newN, final SuuriLuku newE, final SuuriLuku newD) {</span>
+<span class="fc" id="L34">        this.n = newN;</span>
+<span class="fc" id="L35">        this.e = newE;</span>
+<span class="fc" id="L36">        this.d = newD;</span>
+<span class="fc" id="L37">    }</span>
 
     /**
      * Palauta avaimen jakojäännös (n).
      *
      * @return avaimen jakojäännös (n).
      */
-    public BigInteger getN() {
-<span class="fc" id="L43">        return this.n;</span>
+    public SuuriLuku getN() {
+<span class="fc" id="L45">        return this.n;</span>
     }
 
     /**
@@ -48,8 +50,8 @@ public class Avain {
      *
      * @return julkinen avain (e).
      */
-    public BigInteger getE() {
-<span class="fc" id="L52">        return this.e;</span>
+    public SuuriLuku getE() {
+<span class="fc" id="L54">        return this.e;</span>
     }
 
     /**
@@ -57,35 +59,35 @@ public class Avain {
      *
      * @return yksityinen avain (d).
      */
-    public BigInteger getD() {
-<span class="fc" id="L61">        return this.d;</span>
+    public SuuriLuku getD() {
+<span class="fc" id="L63">        return this.d;</span>
     }
 
     /**
      * Aseta avaimen jakojäännös (n).
      *
-     * @param newN avaimen jakojäännös (n).
+     * @param uusiN avaimen jakojäännös (n).
      */
-    public void setN(final BigInteger newN) {
-<span class="fc" id="L70">        this.n = newN;</span>
-<span class="fc" id="L71">    }</span>
+    public void setN(final SuuriLuku uusiN) {
+<span class="fc" id="L72">        this.n = uusiN;</span>
+<span class="fc" id="L73">    }</span>
 
     /**
      * Aseta julkinen avain (e).
      *
-     * @param newE julkinen avain (e).
+     * @param uusiE julkinen avain (e).
      */
-    public void setE(final BigInteger newE) {
-<span class="fc" id="L79">        this.e = newE;</span>
-<span class="fc" id="L80">    }</span>
+    public void setE(final SuuriLuku uusiE) {
+<span class="fc" id="L81">        this.e = uusiE;</span>
+<span class="fc" id="L82">    }</span>
 
     /**
      * Aseta yksityinen avain (d).
      *
-     * @param newD yksityinen avain (d).
+     * @param uusiD yksityinen avain (d).
      */
-    public void setD(final BigInteger newD) {
-<span class="fc" id="L88">        this.d = newD;</span>
-<span class="fc" id="L89">    }</span>
+    public void setD(final SuuriLuku uusiD) {
+<span class="fc" id="L90">        this.d = uusiD;</span>
+<span class="fc" id="L91">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

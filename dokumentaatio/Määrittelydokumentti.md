@@ -3,7 +3,7 @@
 Aineopintojen harjoitustyö: Tietorakenteet ja algoritmit
 Syksy 2020 - periodi II
 Tietojenkäsittelytieteen kandiohjelma
-Koodi Javalla
+Koodattu Javalla
 
 Varsinainen dokumentaatio, JavaDoc ja koodin sisäinen kommentointi ovat suomenkielisiä. Koodi on siinä mielessä englantia, ettei ole olemassa suomenkielistä Javan koodauskieltä.
 
@@ -17,13 +17,13 @@ RSA on itsessään deterministinen algoritmi, joten täytteenä (padding) olisi 
 ### Ongelma
 Tietoturva on elinehto tietotekniikan ja etenkin Internetin toiminnalle. Tietoturvan keskiössä toimii usein erilaiset salausmetodit. Tavoitteena on luoda tietoturvaa ratkomalla salaukseen liittyviä ongelmia. Tarkemmin sanottuna koitetaan ratkoa salauksen yleistä ongelmaa; salaus on suhteellisesti helppoa, kun turvallinen yhteys on saatu muodostettua, mutta alkuperäinen yhteyden muodostaminen on haasteellista. Symmetrisessä salauksessa, mikäli tunkeutuja pystyy kuuntelemaan viestinvaihdosta sovittaessa salauksesta, voi tunkeutuja purkaa myös myöhemmin kaiken salatun liikkuvan datan. Tarvitaankin tapa sopia salauksesta, joka ei anna tunkeutujalle mahdollisuutta purkaa viestejä, vaikka hänellä olisikin tiedossa mitä alunperin sovittiin. Ratkaisuna toimii epäsymmetrinen salaus, joka on tässä tapauksessa toteutettu RSA-avainparin avulla. RSA:n julkisen avaimen avulla voidaan lähettää salattuja viestejä, jotka vain yksityisen avaimen haltija voi purkaa. Nyt siis vaikka tunkeutuja kuulisikin koko viestinvaihdon, ei hän voi purkaa salattuja viestejä.
 
-Epäsymmetriseksi salauksesi valitsin RSA:n, koska se on ensimmäinen julkisuuteen kerrottu epäsymmetrinen salaus. RSA on myös yksi tunnetuimpia salausmetodeja ja edelleen suuresti käytössä nykypäivänä. Ja mikäli tekijöihinjakoalgoritmit tai kvanttitietokoneet eivät edisty merkittävästi asian suhteen, on RSA myös tulevaisuudessa pätevä salauskeino. Suurten lukujen käsittelyyn en ole löytänyt mitään yleistä algoritmia, vaan se on yhdistelmä omaa ajatusta ja yleisiä tapoja käsitellä lukuja. (TODO Satunnaisuudesta päivitän kun etenee...)
+Epäsymmetriseksi salauksesi valitsin RSA:n, koska se on ensimmäinen julkisuuteen kerrottu epäsymmetrinen salaus. RSA on myös yksi tunnetuimpia salausmetodeja ja edelleen suuresti käytössä nykypäivänä. Ja mikäli tekijöihinjakoalgoritmit tai kvanttitietokoneet eivät edisty merkittävästi asian suhteen, on RSA myös tulevaisuudessa pätevä salauskeino. Suurten lukujen käsittelyyn en ole löytänyt mitään yleistä algoritmia, vaan se on yhdistelmä omaa ajatusta ja yleisiä tapoja käsitellä lukuja.
 
 ### Käyttäjän syöte
-Käyttäjä kertoo komentojen kautta mitä ohjelma tekee. Komentoihin voi liittyä myös erilaisia parametreja, joilla käyttäjä voi hienosäätää suoritusta. Ohjelma ei tee itsenäisesti mitään, vaan kaikki tapahtuu käyttäjän kautta.
+Käyttäjä kertoo komentojen kautta mitä ohjelma tekee. Komennot jakautuvat pienempiin osiin, joilla käyttäjältä kysytään vaadittavat tiedot komennot suorittamiseen. Ohjelma ei varsinaisesti tee itse mitään, vaan kaikki toiminallisuus tapahtuu käyttäjän aloitteesta.
 
 ### Aika- ja tilavaativuudet
-Yleisesti aika- ja tilavaatimuksena on, että ohjelmaa voisi käyttää yleisesti PC:llä järkevässä mielessä. Vaatimukset tarkentuvat ajan kuluessa. Avainten luonnin pitäisi onnistua alle minuuttissa sekä salauksen ja purun alle puolen minuutin, jotta ohjelmassa olisi juurikaan järkeä. (TODO Iso-O -notaation vaatimuksia tulee tarkastella myöhemmin...)
+Yleisesti aika- ja tilavaatimuksena on, että ohjelmaa voisi käyttää yleisesti yleisellä tietokoneella järkevässä mielessä. Avainten luonnin pitäisi onnistua alle minuuttissa sekä salauksen ja purun alle puolen minuutin, jotta ohjelmassa olisi juurikaan järkeä.
 
 ### Lähteet
 Kaikki lähteet on haettu aikavälillä 28.10.2020 - 6.11.2020.
@@ -97,6 +97,7 @@ Kaikki lähteet on haettu aikavälillä 28.10.2020 - 6.11.2020.
 	* CheckStyle with warning '100' is a magic number - https://stackoverflow.com/questions/30044804/checkstyle-with-warning-100-is-a-magic-number
 	* How to generate javado documentation with umlauts - https://stackoverflow.com/questions/1319489/how-to-generate-javadoc-documentation-with-umlauts
 	* JavadocPackage usage in checkstyle - https://stackoverflow.com/questions/1366044/javadocpackage-usage-in-checkstyle
+	* java.util.NoSuchElementException in basic Scanner usage - https://stackoverflow.com/questions/58259574/java-util-nosuchelementexception-in-basic-scanner-usage
 	* JUnit test for System.out.println() - https://stackoverflow.com/questions/1119385/junit-test-for-system-out-println
 	* Manually converting a string to an integer in Java - https://stackoverflow.com/questions/8893768/manually-converting-a-string-to-an-integer-in-java
 	* Netbeans - fix imports on entire project - https://stackoverflow.com/questions/30321854/netbeans-fix-imports-on-entire-project

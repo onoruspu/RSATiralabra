@@ -107,7 +107,7 @@ public class Kayttoliittyma {
      * @return käyttäjän antama syöte.
      */
     public String lueSyöte(final String messageToUser) {
-        System.out.print(messageToUser);
+        System.out.println(messageToUser);
         String syöte = this.syötteenLukija.nextLine();
         return syöte;
     }
@@ -394,7 +394,8 @@ public class Kayttoliittyma {
         if (aliTaso == 2) {
             System.out.println("Muutetaan viesti luvuksi. Muutos suoritetaan muuttamalla merkit Unicode arvoiksi."
                     + " Mikäli haluat käyttää jotain muuta muutostapaa, tee se toisessa sovelluksessa ja käytä tätä"
-                    + " sovellusta vain purkuun ja salaukseen.");
+                    + " sovellusta vain purkuun ja salaukseen. Huomio myös, että viestin pituudelle on olemassa"
+                    + " yläraja, joka riippuu käytettävän RSA-avaiment pituudesta.");
         } else if (aliTaso == 3) {
             System.out.println("Muutetaan luku viestiksi. Muutos toteutetaan tulkitsemalla luvut Unicode arvoina. "
                     + " Varmista, että alkuperäinen muutos on toteutettu Unicode arvoilla,"

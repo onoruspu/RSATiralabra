@@ -9,20 +9,6 @@ import tietorakenteet.SuuriLuku;
  * Testiluokka Avain-luokalle.
  */
 public class AvainTest {
-
-    /**
-     * Apumetodi testaukseen.
-     *
-     * @param sL1 Luku, jota verrataan.
-     *
-     * @param sL2 Luku, johon verrataan.
-     *
-     * @return Ovatko luvut samat?
-     */
-    private Boolean onSamatNumerot(final SuuriLuku sL1, final SuuriLuku sL2) {
-        return sL1.samaLukuArvo(sL1, sL2);
-    }
-
     /**
      * Testi avain-luokan konstruktrorille.
      */
@@ -30,16 +16,16 @@ public class AvainTest {
     public void avaimenLuojaTesti() {
         // Testi nollilla.
         Avain avain1 = new Avain(new SuuriLuku("0"), new SuuriLuku("0"), new SuuriLuku("0"));
-        assertTrue(onSamatNumerot(new SuuriLuku("0"), avain1.getN()));
-        assertTrue(onSamatNumerot(new SuuriLuku("0"), avain1.getE()));
-        assertTrue(onSamatNumerot(new SuuriLuku("0"), avain1.getD()));
+        assertTrue(new SuuriLuku("0").samaLukuArvo(avain1.getN()));
+        assertTrue(new SuuriLuku("0").samaLukuArvo(avain1.getE()));
+        assertTrue(new SuuriLuku("0").samaLukuArvo(avain1.getD()));
 
         // Testi sekalaisella luvulla.
         Avain avain2 = new Avain(new SuuriLuku("24095681039462341"),
                 new SuuriLuku("10010101011101010101011"), new SuuriLuku("12312577791723777712"));
-        assertTrue(onSamatNumerot(new SuuriLuku("24095681039462341"), avain2.getN()));
-        assertTrue(onSamatNumerot(new SuuriLuku("10010101011101010101011"), avain2.getE()));
-        assertTrue(onSamatNumerot(new SuuriLuku("12312577791723777712"), avain2.getD()));
+        assertTrue(new SuuriLuku("24095681039462341").samaLukuArvo(avain2.getN()));
+        assertTrue(new SuuriLuku("10010101011101010101011").samaLukuArvo(avain2.getE()));
+        assertTrue(new SuuriLuku("12312577791723777712").samaLukuArvo(avain2.getD()));
 
         // Testi suurilla luvuilla.
         Avain avain3 = new Avain(new SuuriLuku("4462614641156714134324465427255425474252349820934892034"
@@ -51,15 +37,16 @@ public class AvainTest {
                 new SuuriLuku("456556456416135468534145614561461455113645541657614947941734158576"
                         + "91136451145198261961418596316986411396543854594119645419681341467965169"
                         + "41329686441962431512312"));
-        assertTrue(onSamatNumerot(new SuuriLuku("446261464115671413432446542725542547425234982093"
+
+        assertTrue(new SuuriLuku("446261464115671413432446542725542547425234982093"
                 + "4892034809238490280938209358723847198237192371204987298572985739084759837489536"
-                + "134560147645385758310136264749813"), avain3.getN()));
-        assertTrue(onSamatNumerot(new SuuriLuku("487409875248975398457983134789571983479840758912"
+                + "134560147645385758310136264749813").samaLukuArvo(avain3.getN()));
+        assertTrue(new SuuriLuku("487409875248975398457983134789571983479840758912"
                 + "3748293759123472857084372987435982346374524557132590346425432542452465234524566"
-                + "544256724524573171345619384543615"), avain3.getE()));
-        assertTrue(onSamatNumerot(new SuuriLuku("456556456416135468534145614561461455113645541657"
+                + "544256724524573171345619384543615").samaLukuArvo(avain3.getE()));
+        assertTrue(new SuuriLuku("456556456416135468534145614561461455113645541657"
                 + "6149479417341585769113645114519826196141859631698641139654385459411964541968134"
-                + "146796516941329686441962431512312"), avain3.getD()));
+                + "146796516941329686441962431512312").samaLukuArvo(avain3.getD()));
     }
 
     /**
@@ -73,9 +60,9 @@ public class AvainTest {
         avain.setN(new SuuriLuku("12345"));
         avain.setE(new SuuriLuku("67890"));
         avain.setD(new SuuriLuku("23508"));
-        assertTrue(onSamatNumerot(new SuuriLuku("12345"), avain.getN()));
-        assertTrue(onSamatNumerot(new SuuriLuku("67890"), avain.getE()));
-        assertTrue(onSamatNumerot(new SuuriLuku("23508"), avain.getD()));
+        assertTrue(new SuuriLuku("12345").samaLukuArvo(avain.getN()));
+        assertTrue(new SuuriLuku("67890").samaLukuArvo(avain.getE()));
+        assertTrue(new SuuriLuku("23508").samaLukuArvo(avain.getD()));
 
         // Testi suurilla luvuilla. E:n ei tarvi olla koskaan erityisen suuri, joten jätetään testaamatta.
         SuuriLuku suuriLukuN = new SuuriLuku("279030005713468610836671817997284748197879772424487572958684793"
@@ -96,7 +83,7 @@ public class AvainTest {
                 + "60730867528647493786153207716937633125");
         avain.setN(suuriLukuN);
         avain.setD(suuriLukuD);
-        assertTrue(onSamatNumerot(suuriLukuN, avain.getN()));
-        assertTrue(onSamatNumerot(suuriLukuD, avain.getD()));
+        assertTrue(suuriLukuN.samaLukuArvo(avain.getN()));
+        assertTrue(suuriLukuD.samaLukuArvo(avain.getD()));
     }
 }

@@ -30,12 +30,12 @@ public class MerkkijonoMuutosTest {
     /**
      * Testattava merkkijono.
      */
-    private final String kirjaimet2 = "0123456789";
+    private final String kirjaimet2 = "1234567890";
 
     /**
      * Testattava merkkijono.
      */
-    private final String numerot2 = "00048000490005000051000520005300054000550005600057";
+    private final String numerot2 = "00049000500005100052000530005400055000560005700048";
 
     /**
      * Testattava merkkijono.
@@ -48,6 +48,21 @@ public class MerkkijonoMuutosTest {
     private final String numerot3 = "00189000330003500164000370003800047000400004100061000630009600039000340012"
             + "500123000910003600064001630009400042001680003900265007620116101672016720043300490006300004600044"
             + "00046000450005900058000950073901064038010426305367";
+
+    /**
+     * Testtava luku.
+     */
+    private final int kirjaimet2Kokonaisluku = 1234567890;
+
+    /**
+     * Testtava merkkijon.
+     */
+    private final String kirjaimet4 = "468023498";
+
+    /**
+     * Testttava luku.
+     */
+    private final int kirjaimet4Kokonaisluku = 468023498;
 
     /**
      * Testi merkkijonoLukujenMuotoon-metodille.
@@ -96,14 +111,8 @@ public class MerkkijonoMuutosTest {
     */
     @Test
     public void testConvertStringToInt() {
-        String s = "1234567890";
-        int i = 1234567890;
-        assertEquals(i, this.merkkijonoMuutos.merkkijonoKokonaisluvuksi(s));
-        s = "0";
-        i = 0;
-        assertEquals(i, this.merkkijonoMuutos.merkkijonoKokonaisluvuksi(s));
-        s = "468023498";
-        i = 468023498;
-        assertEquals(i, this.merkkijonoMuutos.merkkijonoKokonaisluvuksi(s));
+        assertEquals(this.kirjaimet2Kokonaisluku, this.merkkijonoMuutos.merkkijonoKokonaisluvuksi(this.kirjaimet2));
+        assertEquals(0, this.merkkijonoMuutos.merkkijonoKokonaisluvuksi("0"));
+        assertEquals(this.kirjaimet4Kokonaisluku, this.merkkijonoMuutos.merkkijonoKokonaisluvuksi(this.kirjaimet4));
     }
 }
