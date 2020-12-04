@@ -32,4 +32,22 @@ public class Taulukko {
         }
         return uusiTaulukko;
     }
+
+    /**
+     * Kopioi taulukko niin, että alkioit ovat takaperoisessa järjestyksessä.
+     *
+     * @param taulukko Kopioitava taulukko.
+     *
+     * @return Taulukon alkiot käännettynä.
+     */
+    public int[] taulukkoTakaperin(final int[] taulukko) {
+        if (taulukko.length == 0) { // Mikäli paremetrina tyhjä taulukko.
+            return new int[]{0};
+        }
+        int[] taulukkoKäännetty = new int[taulukko.length]; // Palautetttava.
+        for (int i = 0; i < taulukko.length; i++) {
+            taulukkoKäännetty[i] = taulukko[taulukko.length - 1 - i]; // Indeksit lopusta lähtien.
+        }
+        return taulukkoKäännetty;
+    }
 }

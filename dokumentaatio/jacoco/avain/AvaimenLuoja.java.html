@@ -18,7 +18,7 @@ import tietorakenteet.SuuriLuku;
      * @return Avaimen, joka sisältää julkisen ja yksityisen avaimen tiedot (n,e,d).
      */
     public Avain luoAvaimet() {
-<span class="fc" id="L21">        SuuriLuku suuriLuku = new SuuriLuku(); // Olio SuuriLuku-luokan metodien käyttämiseen.</span>
+<span class="fc" id="L21">        SuuriLuku suuriLuku = new SuuriLuku(&quot;&quot;); // Olio SuuriLuku-luokan metodien käyttämiseen.</span>
 
         // Alkuluku p.
 <span class="fc" id="L24">        SuuriLuku p = suuriLuku.uusiAlkuluku(ALKULUVUN_KOKO);</span>
@@ -27,22 +27,22 @@ import tietorakenteet.SuuriLuku;
 <span class="fc" id="L27">        SuuriLuku q = suuriLuku.uusiAlkuluku(ALKULUVUN_KOKO);</span>
 
         // Jakonäännös n.
-<span class="fc" id="L30">        SuuriLuku n = suuriLuku.kertolasku(p, q);</span>
+<span class="fc" id="L30">        SuuriLuku n = p.kopio();</span>
+<span class="fc" id="L31">        n.kertolasku(q);</span>
 
         // Fii (engl. phi).
-<span class="fc" id="L33">        p.yhdenPienempi();</span>
-<span class="fc" id="L34">        q.yhdenPienempi();</span>
-<span class="fc" id="L35">        SuuriLuku fii = suuriLuku.kertolasku(p, q);</span>
+<span class="fc" id="L34">        p.yhdenPienempi();</span>
+<span class="fc" id="L35">        q.yhdenPienempi();</span>
+<span class="fc" id="L36">        SuuriLuku fii = p.kopio();</span>
+<span class="fc" id="L37">        fii.kertolasku(q);</span>
 
         // e - julkinen avain
-<span class="fc" id="L38">        SuuriLuku e = suuriLuku.e();</span>
+<span class="fc" id="L40">        SuuriLuku e = suuriLuku.e();</span>
 
         // d - yksityinen avain.
-<span class="fc" id="L41">        SuuriLuku d = suuriLuku.jakojäännösKäänteisluku(e, fii);</span>
+<span class="fc" id="L43">        SuuriLuku d = suuriLuku.jakojäännösKäänteisluku(e, fii);</span>
 
         // Avain-luokka toimii toistaiseksi BigInteger-oliolla.
-        // return new Avain(n.getBigInt(), e.getBigInt(), d.getBigInt());
-
 <span class="fc" id="L46">        return new Avain(n, e, d);</span>
     }
 

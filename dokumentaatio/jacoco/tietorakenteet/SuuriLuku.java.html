@@ -29,27 +29,37 @@ public class SuuriLuku {
     /**
      * Tämänhetkinen alkuluku e:n arvo.
      */
-    private static final int PRIME_E = 65537;
+    private static final int ALKULUKU_E = 65537;
 
     /**
-     * Tyhjä konstruktori.
+     * Konstruktori, jossa kokonaislukutaulukko antaa SuuriLuku-olion numeerisen arvon.
+     * Tyhjä taulukko tulkitaan nollana.
+     *
+     * @param numerotTaulukko Sisältää numeerisen arvon yksittäisinä numeroina.
      */
-<span class="fc" id="L37">    public SuuriLuku() {</span>
-<span class="fc" id="L38">    }</span>
+<span class="fc" id="L40">    public SuuriLuku(final int[] numerotTaulukko) {</span>
+<span class="fc" id="L41">        this.numerot = numerotTaulukko;</span>
+<span class="fc" id="L42">        päivitäBigInt();</span>
+<span class="fc" id="L43">    }</span>
 
     /**
      * Konstruktori, jossa merkkijono antaa SuuriLuku-olion numeerisen arvon.
+     * Tyhjä merkkijono tulkitaan nollana.
      *
      * @param lukuMerkkijonona Sisältää numeerisen arvon merkkijonon muodossaa.
      */
-<span class="fc" id="L45">    public SuuriLuku(final String lukuMerkkijonona) {</span>
-<span class="fc" id="L46">        this.numerot = new int[lukuMerkkijonona.length()];</span>
-<span class="fc bfc" id="L47" title="All 2 branches covered.">        for (int i = 0; i &lt; lukuMerkkijonona.length(); i++) {</span>
-<span class="fc" id="L48">            this.numerot[i] = lukuMerkkijonona.charAt(i) - '0'; // charAt antaa ASCII-arvoja(?), joten</span>
-                                                                // Vähennetään '0' saadaksemme numeerisia arvoja.
+<span class="fc" id="L51">    public SuuriLuku(final String lukuMerkkijonona) {</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (lukuMerkkijonona.length() == 0) {</span>
+<span class="fc" id="L53">            this.numerot = new int[]{0};</span>
+        } else {
+<span class="fc" id="L55">            this.numerot = new int[lukuMerkkijonona.length()];</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">            for (int i = 0; i &lt; lukuMerkkijonona.length(); i++) {</span>
+<span class="fc" id="L57">                this.numerot[i] = lukuMerkkijonona.charAt(i) - '0'; // charAt antaa ASCII-arvoja(?), joten</span>
+                                                                    // Vähennetään '0' saadaksemme numeerisia arvoja.
+            }
         }
-<span class="fc" id="L51">        päivitäBigInt();</span>
-<span class="fc" id="L52">    }</span>
+<span class="fc" id="L61">        päivitäBigInt();</span>
+<span class="fc" id="L62">    }</span>
 
     // TODO - korvaa omalla toteutuksella.
     /**
@@ -60,21 +70,79 @@ public class SuuriLuku {
      * @return SuuriLuku, joka on todennäköinen alkuluku.
      */
     public SuuriLuku uusiAlkuluku(final int alkuluvunKoko) {
-<span class="fc" id="L63">        return new SuuriLuku(BigInteger.probablePrime(alkuluvunKoko, new Random()).toString());</span>
+<span class="fc" id="L73">        return new SuuriLuku(BigInteger.probablePrime(alkuluvunKoko, new Random()).toString());</span>
     }
 
-    // TODO - korvaa omalla toteutuksella.
     /**
      * Kertolasku kahdelle SuurelleLuvulle.
      *
-     * @param kerrottava Mikä kerrotaan.
-     *
-     * @param kertoja Millä kerrotaan.
-     *
-     * @return Kertolaskun tulos.
+     * @param kerrottava SuuriLuku, jolla kerrotaan.
      */
-    public SuuriLuku kertolasku(final SuuriLuku kerrottava, final SuuriLuku kertoja) {
-<span class="fc" id="L77">        return new SuuriLuku(kerrottava.bigInt.multiply(kertoja.bigInt).toString());</span>
+    // Kertolasku binäärin kautta voisi olla tehokkaampi, mutta vaatisi muutoksen desimaaliin.
+    // Oleellisesti toteutus kertolaskulla on vain summauksen toistoa. Tämä ei ole nopein
+    // tapa toteuttaa kertolasku, mutta se on intuitiviisin.
+    public void kertolasku(final SuuriLuku kerrottava) {
+        // Tarkistus nollalle ja tyhjälle.
+<span class="pc bpc" id="L86" title="1 of 4 branches missed.">        if (this.onNolla() || kerrottava.onNolla()) {</span>
+<span class="fc" id="L87">            this.numerot = new int[]{0};</span>
+        } else {
+<span class="fc" id="L89">            SuuriLuku tulos = new SuuriLuku(&quot;0&quot;);</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">            for (int i = 0; i &lt;= kerrottava.getNumerot().length - 1; i++) {</span>
+<span class="fc" id="L91">                SuuriLuku välitulos = this.kopio();</span>
+<span class="fc" id="L92">                välitulos.yhdenKertolasku(kerrottava.numerot[kerrottava.numerot.length - 1 - i]);</span>
+<span class="fc" id="L93">                välitulos.lisääNollia(i);</span>
+<span class="fc" id="L94">                tulos.pluslasku(välitulos);</span>
+            }
+<span class="fc" id="L96">            this.numerot = tulos.numerot;</span>
+        }
+<span class="fc" id="L98">    }</span>
+
+    /**
+     * Kerro SuuriLuku yhdellä numerolla [0-9].
+     *
+     * @param kerroin Numero, jolla kerrotaan.
+     */
+    public void yhdenKertolasku(final int kerroin) {
+<span class="pc bpc" id="L106" title="2 of 4 branches missed.">        if (kerroin &lt; 0 || kerroin &gt; 9) {</span>
+<span class="nc" id="L107">            throw new IllegalArgumentException();</span>
+        }
+<span class="fc" id="L109">        SuuriLuku uusiSuuriLuku = new SuuriLuku(&quot;0&quot;);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        for (int i = this.numerot.length - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L111">            int luku = this.numerot[i] * kerroin; // Apumuuttuja.</span>
+<span class="fc" id="L112">            int ykköset = luku % 10; // Apumuuttuja.</span>
+            SuuriLuku suuriLuku;
+<span class="fc bfc" id="L114" title="All 2 branches covered.">            if (luku &gt;= 10) {</span>
+<span class="fc" id="L115">                int kymmenet = (luku - ykköset) / 10; // Apumuuttuja.</span>
+<span class="fc" id="L116">                suuriLuku = new SuuriLuku(&quot;&quot; + kymmenet + ykköset);</span>
+<span class="fc" id="L117">            } else {</span>
+<span class="fc" id="L118">                suuriLuku = new SuuriLuku(&quot;&quot; + ykköset);</span>
+            }
+<span class="fc" id="L120">            suuriLuku.lisääNollia(this.numerot.length - 1 - i);</span>
+<span class="fc" id="L121">            uusiSuuriLuku.pluslasku(suuriLuku);</span>
+        }
+<span class="fc" id="L123">        this.numerot = uusiSuuriLuku.numerot;</span>
+<span class="fc" id="L124">    }</span>
+
+    /**
+     * Lisätään luvun loppuun nollia.
+     *
+     * @param montakoNollaa Lisättävien nollien määrä.
+     */
+    public void lisääNollia(final int montakoNollaa) {
+<span class="fc" id="L132">        int[] uudetNumerot = new int[this.numerot.length + montakoNollaa];</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        for (int i = 0; i &lt; this.numerot.length; i++) {</span>
+<span class="fc" id="L134">            uudetNumerot[i] = this.numerot[i];</span>
+        }
+<span class="fc" id="L136">        this.numerot = uudetNumerot;</span>
+<span class="fc" id="L137">    }</span>
+
+    /**
+     * Kopioi SuuriLuku-olion numeerinen arvo.
+     *
+     * @return Uusi olio samalla numeerisella arvolla.
+     */
+    public SuuriLuku kopio() {
+<span class="fc" id="L145">        return new SuuriLuku(this.numerot);</span>
     }
 
     /**
@@ -83,34 +151,34 @@ public class SuuriLuku {
      */
     public void yhdenPienempi() {
         // Mikäli ollaan jo nollassa, ei mitään tarvitse tehdä.
-<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (!this.samaLukuArvo(new SuuriLuku(&quot;0&quot;))) {</span>
-<span class="fc" id="L87">            int viimeinenIndeksi = this.numerot.length - 1; // Tarpeeton muuttuja, mutta helpottaa koodin lukua.</span>
-<span class="fc bfc" id="L88" title="All 2 branches covered.">            if (this.numerot[viimeinenIndeksi] == 0) { // Mikäli viimeinen numero on nolla, tulee miettiä sen</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">        if (!this.samaLukuArvo(new SuuriLuku(&quot;0&quot;))) {</span>
+<span class="fc" id="L155">            int viimeinenIndeksi = this.numerot.length - 1; // Tarpeeton muuttuja, mutta helpottaa koodin lukua.</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">            if (this.numerot[viimeinenIndeksi] == 0) { // Mikäli viimeinen numero on nolla, tulee miettiä sen</span>
                                                        // vähentämisen vaikutuksia muihinkin numeroihin.
-<span class="fc" id="L90">                int eiNollatLaskuri = 1; // Pidetään kirjaa muista kuin nollien määräst.</span>
-<span class="pc bpc" id="L91" title="1 of 2 branches missed.">                for (int i = 1; i &lt; this.numerot.length; i++) { // i=1, sillä viimeinen arvo on jo tarkistettu yllä.</span>
-<span class="fc bfc" id="L92" title="All 2 branches covered.">                    if (this.numerot[this.numerot.length - 1 - i] != 0) {</span>
-<span class="fc" id="L93">                        break; // Jos löytyy yksikin ei-nolla, ei tarkistusta tarvitse enään jatkaa.</span>
+<span class="fc" id="L158">                int eiNollatLaskuri = 1; // Pidetään kirjaa muista kuin nollien määräst.</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">                for (int i = 1; i &lt; this.numerot.length; i++) { // i=1, sillä viimeinen arvo on jo tarkistettu yllä.</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">                    if (this.numerot[this.numerot.length - 1 - i] != 0) {</span>
+<span class="fc" id="L161">                        break; // Jos löytyy yksikin ei-nolla, ei tarkistusta tarvitse enään jatkaa.</span>
                     } else {
-<span class="fc" id="L95">                        eiNollatLaskuri++;</span>
+<span class="fc" id="L163">                        eiNollatLaskuri++;</span>
                     }
                 }
-<span class="pc bpc" id="L98" title="1 of 2 branches missed.">                if (eiNollatLaskuri != this.numerot.length) { // Mikäli tämä olisi tosi, olisi kaikki luvut nollia,</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">                if (eiNollatLaskuri != this.numerot.length) { // Mikäli tämä olisi tosi, olisi kaikki luvut nollia,</span>
                                                               // jolloin emme halua vähentää mitään.
-<span class="fc bfc" id="L100" title="All 2 branches covered.">                    for (int i = 0; i &lt; eiNollatLaskuri; i++) { // Asetetaan kaikki nollat yhdeksään (10-1=9).</span>
-<span class="fc" id="L101">                        this.numerot[this.numerot.length - 1 - i] = 9;</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">                    for (int i = 0; i &lt; eiNollatLaskuri; i++) { // Asetetaan kaikki nollat yhdeksään (10-1=9).</span>
+<span class="fc" id="L169">                        this.numerot[this.numerot.length - 1 - i] = 9;</span>
                     }
-<span class="fc" id="L103">                    this.numerot[this.numerot.length - 1 - eiNollatLaskuri] -= 1; // Korjataan nollien jälkeinen numero.</span>
+<span class="fc" id="L171">                    this.numerot[this.numerot.length - 1 - eiNollatLaskuri] -= 1; // Korjataan nollien jälkeinen numero.</span>
                 }
-<span class="fc" id="L105">            } else {</span>
-<span class="fc" id="L106">                this.numerot[viimeinenIndeksi] -= 1; // Triviaali tapaus, kun viimeinen luku ei ole nolla.</span>
+<span class="fc" id="L173">            } else {</span>
+<span class="fc" id="L174">                this.numerot[viimeinenIndeksi] -= 1; // Triviaali tapaus, kun viimeinen luku ei ole nolla.</span>
             }
-<span class="fc bfc" id="L108" title="All 2 branches covered.">            if (this.numerot[0] == 0) {</span>
-<span class="fc" id="L109">                this.poistaAlunNollat(); // Siivotaan nollat alusta.</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">            if (this.numerot[0] == 0) {</span>
+<span class="fc" id="L177">                this.numerot = poistaAlunNollat(this.numerot); // Siivotaan nollat alusta.</span>
             }
-<span class="fc" id="L111">            päivitäBigInt(); // Pidetään bigInt ajan tasalla.</span>
         }
-<span class="fc" id="L113">    }</span>
+<span class="fc" id="L180">        päivitäBigInt(); // Pidetään bigInt ajan tasalla.</span>
+<span class="fc" id="L181">    }</span>
 
     /**
      * Palauta SuuriLuku-olion sisäinen BigInteger-olio.
@@ -119,17 +187,16 @@ public class SuuriLuku {
      */
     // Metodi on yksityinen, sillä muilla luokilla ei tarvitse olla pääsyä BigInteger-olioon.
     private BigInteger getBigInt() {
-<span class="fc" id="L122">        return this.bigInt;</span>
+<span class="fc" id="L190">        return this.bigInt;</span>
     }
 
-    // TODO - korvaa omalla toteutuksella.
     /**
      * Palautetaan alkuluku e.
      *
      * @return alkuluku e.
      */
     public SuuriLuku e() {
-<span class="fc" id="L132">        return new SuuriLuku(new BigInteger(&quot;&quot; + PRIME_E).toString());</span>
+<span class="fc" id="L199">        return new SuuriLuku(&quot;&quot; + ALKULUKU_E);</span>
     }
 
     // TODO - korvaa omalla toteutuksella.
@@ -143,7 +210,7 @@ public class SuuriLuku {
      * @return Käänteisluvun jakojäännös.
      */
     public SuuriLuku jakojäännösKäänteisluku(final SuuriLuku käsiteltäväLuku, final SuuriLuku jakojäännös) {
-<span class="fc" id="L146">        return new SuuriLuku(käsiteltäväLuku.getBigInt().modInverse(jakojäännös.getBigInt()).toString());</span>
+<span class="fc" id="L213">        return new SuuriLuku(käsiteltäväLuku.getBigInt().modInverse(jakojäännös.getBigInt()).toString());</span>
     }
 
     // TODO - korvaa omalla toteutuksella.
@@ -157,20 +224,18 @@ public class SuuriLuku {
      * @return Luvun potenssin jakojäännös.
      */
     public SuuriLuku jakojäännösPotenssi(final SuuriLuku eksponentti, final SuuriLuku jakojäännös) {
-<span class="fc" id="L160">        return new SuuriLuku(this.getBigInt().modPow(eksponentti.getBigInt(), jakojäännös.getBigInt()).toString());</span>
+<span class="fc" id="L227">        return new SuuriLuku(this.getBigInt().modPow(eksponentti.getBigInt(), jakojäännös.getBigInt()).toString());</span>
     }
 
-    // TODO - korvaa omalla toteutuksella.
     /**
      * Palautetaan SuuriLuku-olion binäärisen arvon pituus.
      *
      * @return Kokonaisluku bittipituus.
      */
     public int bittiPituus() {
-<span class="fc" id="L170">        return this.getBigInt().bitLength();</span>
+<span class="fc" id="L236">        return this.binäärinä().length;</span>
     }
 
-    // TODO - korvaa omalla toteutuksella.
     /**
      * Tieto siitä, onko lukujen numeerinen arvo identtinen.
      *
@@ -179,7 +244,20 @@ public class SuuriLuku {
      * @return Totuusarvo siitä ovatko lukujen arvot samat.
      */
     public boolean samaLukuArvo(final SuuriLuku verrattava) {
-<span class="fc" id="L182">        return this.getBigInt().equals(verrattava.getBigInt());</span>
+<span class="fc" id="L247">        int[] tämäNumerot = this.getNumerot(); // Tarpeeton muuttuja, mutta selkiyttää.</span>
+<span class="fc" id="L248">        int[] verrattavaNumerot = verrattava.getNumerot(); // Tarpeeton muuttuja, mutta selkiyttää.</span>
+        // Jos pituus on eri.
+<span class="fc bfc" id="L250" title="All 2 branches covered.">        if (tämäNumerot.length != verrattavaNumerot.length) {</span>
+<span class="fc" id="L251">            return false;</span>
+        }
+        // Jos numeerinen arvo on eri.
+<span class="fc bfc" id="L254" title="All 2 branches covered.">        for (int i = 0; i &lt; tämäNumerot.length; i++) {</span>
+<span class="fc bfc" id="L255" title="All 2 branches covered.">            if (tämäNumerot[i] != verrattavaNumerot[i]) {</span>
+<span class="fc" id="L256">                return false;</span>
+            }
+        }
+        // Muulloin.
+<span class="fc" id="L260">        return true;</span>
     }
 
     /**
@@ -188,34 +266,37 @@ public class SuuriLuku {
      * @return Merkkijono numeerisesta arvosta.
      */
     public String merkkijonoksi() {
-<span class="fc" id="L191">        String s = &quot;&quot;; // StringBuilder olisi nopeampi, mutta haluamme välttää valmiita luokkia.</span>
-<span class="fc bfc" id="L192" title="All 2 branches covered.">        for (int i = 0; i &lt; numerot.length; i++) {</span>
-<span class="fc" id="L193">            s += this.numerot[i];</span>
+<span class="fc" id="L269">        String s = &quot;&quot;; // StringBuilder olisi nopeampi, mutta haluamme välttää valmiita luokkia.</span>
+<span class="fc bfc" id="L270" title="All 2 branches covered.">        for (int i = 0; i &lt; numerot.length; i++) {</span>
+<span class="fc" id="L271">            s += this.numerot[i];</span>
         }
-<span class="fc" id="L195">        return s;</span>
+<span class="fc" id="L273">        return s;</span>
     }
 
     /**
-     * Poistetaan luvun alussa olevat numeerisesti tarpeettomat nollat (00001 = 1).
+     * oistetaan luvun alussa olevat numeerisesti tarpeettomat nollat (00001 = 1).
+     *
+     * @param luvut Käsiteltävät luvut.
+     *
+     * @return Luku ilman alkun nollia.
      */
-    public void poistaAlunNollat() {
-<span class="fc" id="L202">        int nollaLaskuri = 0; // Pidetään kirjaa nollien määrästä.</span>
-<span class="fc bfc" id="L203" title="All 2 branches covered.">        for (int i = 0; i &lt; numerot.length; i++) {</span>
-<span class="pc bpc" id="L204" title="1 of 2 branches missed.">            if (numerot[i] == 0) {</span>
-<span class="fc" id="L205">                nollaLaskuri++;</span>
+    public int[] poistaAlunNollat(final int[] luvut) {
+<span class="fc" id="L284">        int nollaLaskuri = 0; // Pidetään kirjaa nollien määrästä.</span>
+<span class="fc bfc" id="L285" title="All 2 branches covered.">        for (int i = 0; i &lt; luvut.length; i++) {</span>
+<span class="fc bfc" id="L286" title="All 2 branches covered.">            if (luvut[i] == 0) {</span>
+<span class="fc" id="L287">                nollaLaskuri++;</span>
             } else {
-                break; // Silmukka voidaan lopettaa, mikäli löydetään yksi ei-nolla.
+                break; // Silmukka voidaan lopettaa, mikäli löydetään yksikin ei-nolla.
             }
         }
-<span class="pc bpc" id="L210" title="1 of 2 branches missed.">        if (nollaLaskuri == numerot.length) {</span>
-            // Poikkeustilanteessa kaikki numerot ovat nollia, jolloin palautamme nollan.
-<span class="fc" id="L212">            this.numerot = new int[]{0};</span>
+<span class="fc bfc" id="L292" title="All 2 branches covered.">        if (nollaLaskuri == luvut.length) {</span>
+            // Poikkeustilanteessa kaikki luvut ovat nollia, jolloin palautamme nollan.
+<span class="fc" id="L294">            return  new int[]{0};</span>
         } else {
-<span class="nc" id="L214">            Taulukko taulukko = new Taulukko(); // Apuolio.</span>
-<span class="nc" id="L215">            this.numerot = taulukko.kopioiTaulukkoVälillä(numerot, nollaLaskuri, numerot.length - 1);</span>
+<span class="fc" id="L296">            Taulukko taulukko = new Taulukko(); // Apuolio.</span>
+<span class="fc" id="L297">            return taulukko.kopioiTaulukkoVälillä(luvut, nollaLaskuri, luvut.length - 1);</span>
         }
-<span class="fc" id="L217">        päivitäBigInt(); // PÄivitetään bigInt-arvo.</span>
-<span class="fc" id="L218">    }</span>
+    }
 
     /**
      * Päivitetään BigInteger samaan numeriseen arvoon kuin SuuriLuvun numerot.
@@ -224,7 +305,194 @@ public class SuuriLuku {
      */
     // Metodi on puhtaasti luokan sisäinen, joten se on määritetty yksityiseksi.
     private void päivitäBigInt() {
-<span class="fc" id="L227">        this.bigInt = new BigInteger(this.merkkijonoksi());</span>
-<span class="fc" id="L228">    }</span>
+<span class="fc" id="L308">        this.bigInt = new BigInteger(this.merkkijonoksi());</span>
+<span class="fc" id="L309">    }</span>
+
+    /**
+     * SuuriLuvun numerot taulukkona.
+     *
+     * @return Taulukku lukuarvoista.
+     */
+    public int[] getNumerot() {
+<span class="fc" id="L317">        return this.numerot;</span>
+    }
+
+    /**
+     * Muutetaan SuuriLuku binäärimuotoon.
+     *
+     * @return Palautetaan binääri taulukkona.
+     */
+    public int[] binäärinä() {
+        // Triviaali tapaus, kun luku on nolla.
+<span class="fc bfc" id="L327" title="All 2 branches covered.">        if (this.onNolla()) {</span>
+<span class="fc" id="L328">            return new int[]{0};</span>
+        }
+
+        // Kopioidaan numerot, jotta voimme muokata taulukkoa.
+<span class="fc" id="L332">        int[] numerotTilapäinen = this.numerot;</span>
+        // Alustetaan koko niin, että se on aina riittävän suuri, jotta siitä ei tarvitse
+        // välittää alussa. Pienennetään koko myöhemmin.
+<span class="fc" id="L335">        int[] binääriNumerot = new int[numerotTilapäinen.length * 10];</span>
+<span class="fc" id="L336">        int indeksi = 0; // Indeksi.</span>
+<span class="fc" id="L337">        Boolean silmukka = true; // Asetetaan silmukka.</span>
+
+<span class="fc bfc" id="L339" title="All 2 branches covered.">        while (!vainNollia(numerotTilapäinen)) { // Varsinainen muunnos.</span>
+<span class="fc" id="L340">            binääriNumerot[indeksi] = kahdenJakojäännös(numerotTilapäinen); // Uusi numero.</span>
+<span class="fc" id="L341">            numerotTilapäinen = kahdenOsamäärä(numerotTilapäinen); // Jaetaan koko luku kahdella.</span>
+<span class="fc bfc" id="L342" title="All 2 branches covered.">            if (vainNollia(numerotTilapäinen)) {</span>
+<span class="fc" id="L343">                silmukka = false;</span>
+            }
+<span class="fc" id="L345">            indeksi++;</span>
+        }
+
+        // Käännä numeroiden järjetys.
+<span class="fc" id="L349">        Taulukko taulukko = new Taulukko(); // Apuolio.</span>
+        // Käännetään taulukko ympäri ja poistetaan tarpeettomat nollat.
+<span class="fc" id="L351">        return poistaAlunNollat(taulukko.taulukkoTakaperin(binääriNumerot));</span>
+    }
+
+    /**
+     * Palautetaan tieto siitä onko luvussa vain nollia.
+     *
+     * @param luvut Tarkistettavat luvut.
+     *
+     * @return Totuusarvo onko luku vain nollia.
+     */
+    public boolean vainNollia(final int[] luvut) {
+<span class="fc bfc" id="L362" title="All 2 branches covered.">        for (int i = 0; i &lt; luvut.length; i++) {</span>
+<span class="fc bfc" id="L363" title="All 2 branches covered.">            if (luvut[i] != 0) {</span>
+<span class="fc" id="L364">                return false;</span>
+            }
+        }
+<span class="fc" id="L367">        return true;</span>
+    }
+
+    /**
+     * Tulos joka saadaan jaettaessa luku kahdella, kun jakojäännös jätetään huomiotta.
+     *
+     * @param luvut Halutun luvun kahden osamärää.
+     *
+     * @return Jakolaskun tulos jaettassa kahdella ilman jakojäännöstä.
+     */
+    public int[] kahdenOsamäärä(final int[] luvut) {
+<span class="fc bfc" id="L378" title="All 2 branches covered.">        for (int i = luvut.length - 1; i &gt;= 0; i--) { // Lopusta alkuun.</span>
+<span class="fc" id="L379">            int numero = luvut[i]; // Tarpeeton, mutta helpottaa elämää.</span>
+<span class="fc bfc" id="L380" title="All 2 branches covered.">            if (numero != 0) { // Mikäli numero on nolla ei mitään tarvitse tehdä.</span>
+<span class="fc bfc" id="L381" title="All 2 branches covered.">                if (numero % 2 == 0) { // Mikäli jakojäännös on tasan, ei tarvitse miettiä</span>
+                                       // jaoen vaikutusta muihin numeroihin.
+<span class="fc" id="L383">                    luvut[i] = numero / 2;</span>
+                } else { // Jakojäännös ei ole tasan, luku on pariton.
+<span class="fc" id="L385">                    luvut[i] = (numero - 1) / 2;</span>
+<span class="fc bfc" id="L386" title="All 2 branches covered.">                    if (i != luvut.length - 1) { // Tarkistetaan ettei olla luvun lopussa.</span>
+<span class="fc" id="L387">                        luvut[i + 1] += 5; // Korjataan seuraava luku lisäämällä siihen 5 (10/2=5).</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L392">        return poistaAlunNollat(luvut); // Palautetaan ilman ylimääräisiä nollia.</span>
+    }
+
+    /**
+     * Mikä on jakojäännös, jos luku jaetaan kahdella.
+     *
+     * @param luvut Jaettava luku.
+     *
+     * @return Jakojäännös.
+     */
+    public int kahdenJakojäännös(final int[] luvut) {
+<span class="fc bfc" id="L403" title="All 2 branches covered.">        if (luvut[luvut.length - 1] % 2 == 0) {</span>
+<span class="fc" id="L404">            return 0;</span>
+        }
+<span class="fc" id="L406">        return 1;</span>
+    }
+
+    /**
+     * Kahden SuuriLuku-olion pluslasku.
+     *
+     * @param lisättävä arvo, joka halutaan lisätä.
+     */
+    public void pluslasku(final SuuriLuku lisättävä) {
+<span class="fc" id="L415">        int[] tämäNumerot = this.getNumerot(); // Ei välttämätön, mutta helpottaa.</span>
+<span class="fc" id="L416">        int[] lisättäväNumerot = lisättävä.getNumerot(); // Ei välttämätön, mutta helpottaa.</span>
+        int[] summaNumerot;
+<span class="fc" id="L418">        int tämäNumerotPituus = tämäNumerot.length; // Ei välttämätön, mutta helpottaa.</span>
+<span class="fc" id="L419">        int lisättäväNumerotPituus = lisättäväNumerot.length; // Ei välttämätön, mutta helpottaa.</span>
+        // Pluslaskun tulos on numerona vähintään yhtä pitkä kuin pidempi summattava,
+        // ja enintään niin pitkä kuin pidempi summattava + 1.
+        // Mahdollinen ylimääräinen pituus käsitellään lopussa.
+<span class="fc bfc" id="L423" title="All 2 branches covered.">        if (tämäNumerotPituus &gt; lisättäväNumerotPituus) {</span>
+<span class="fc" id="L424">            summaNumerot = new int[tämäNumerotPituus + 1];</span>
+        } else {
+<span class="fc" id="L426">            summaNumerot = new int[lisättäväNumerotPituus + 1];</span>
+        }
+
+<span class="fc" id="L429">        Boolean ylitseMenevä = false; // Muuttuja, joka kertoo onko summan tulos 10 tai yli.</span>
+<span class="fc" id="L430">        int tämäNumerotIndeksi = tämäNumerot.length - 1;</span>
+<span class="fc" id="L431">        int lisättäväNumerotIndeksi = lisättäväNumerot.length - 1;</span>
+<span class="fc bfc" id="L432" title="All 2 branches covered.">        for (int i = summaNumerot.length - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L433">            int summa = 0; // Kahden numeron summa, seuraava luku.</span>
+<span class="fc bfc" id="L434" title="All 2 branches covered.">            if (tämäNumerotIndeksi &gt;= 0) {</span>
+<span class="fc" id="L435">                summa += tämäNumerot[tämäNumerotIndeksi];</span>
+            }
+<span class="fc bfc" id="L437" title="All 2 branches covered.">            if (lisättäväNumerotIndeksi &gt;= 0) {</span>
+<span class="fc" id="L438">                summa += lisättäväNumerot[lisättäväNumerotIndeksi];</span>
+            }
+<span class="fc bfc" id="L440" title="All 2 branches covered.">            if (ylitseMenevä) {</span>
+<span class="fc" id="L441">                summa++;</span>
+            }
+
+<span class="fc bfc" id="L444" title="All 2 branches covered.">            if (summa &gt;= 10) {</span>
+<span class="fc" id="L445">                ylitseMenevä = true; // Pidetään kirjaa summauksen vaikutuksesta muualle.</span>
+<span class="fc" id="L446">                summa -= 10; // Halutaan vain viimeisin numero.</span>
+            } else {
+<span class="fc" id="L448">                ylitseMenevä = false;</span>
+            }
+<span class="fc" id="L450">            summaNumerot[i] = summa; // Lisätään saatu numero tuloksiin.</span>
+<span class="fc" id="L451">            tämäNumerotIndeksi--;</span>
+<span class="fc" id="L452">            lisättäväNumerotIndeksi--;</span>
+<span class="fc" id="L453">            summa = 0; // Jatketaan nollasta, jotta saadaan uusi numero.</span>
+        }
+        // Asetetaan saadut tulokset.
+<span class="fc" id="L456">        this.numerot = poistaAlunNollat(summaNumerot); // Ylimääräisten nollien poisto ja koon pienennys.</span>
+<span class="fc" id="L457">        päivitäBigInt();</span>
+<span class="fc" id="L458">    }</span>
+
+    /**
+     * Onko SuuriLuku-olion arvo nolla.
+     *
+     * @return Onko arvo nolla vai ei.
+     */
+    public boolean onNolla() {
+<span class="pc bpc" id="L466" title="1 of 6 branches missed.">        if (this.numerot.length == 0 || (this.numerot.length == 1 &amp;&amp; this.numerot[0] == 0)) {</span>
+<span class="fc" id="L467">            return true;</span>
+        }
+<span class="fc" id="L469">        return false;</span>
+    }
+
+    /**
+     * Muutos binäärinumeroista desimaalinumeroiksi.
+     *
+     * @param binäärit Muutettava binääri.
+     *
+     * @return Desimaali, jolla on sama arvo parametrin binäärien kanssa.
+     */
+    public int[] desimaaliksi(final int[] binäärit) {
+        // Muutos binääristä desimaaliksi on toteuttu käymällä binäärit
+        // yksitellen läpi ja ja lisäämällä näiden kerroin summaan, mikäli
+        // binääri on yhden. Tapa ei ole tehokkain, mutta se on selkeä.
+<span class="fc" id="L483">        SuuriLuku desimaalit = new SuuriLuku(&quot;0&quot;);</span>
+<span class="fc" id="L484">        SuuriLuku kerroin = new SuuriLuku(&quot;1&quot;);</span>
+        // Läpikäynti vähiten merkitsevästä numerosta eniten merkitsevään.
+<span class="fc bfc" id="L486" title="All 2 branches covered.">        for (int i = binäärit.length - 1; i &gt;= 0; i--) {</span>
+<span class="fc bfc" id="L487" title="All 2 branches covered.">            if (binäärit[i] == 1) { // Mikäli binäärissä on nolla, ei mitään tarvitse lisätä.</span>
+<span class="fc" id="L488">                SuuriLuku luku = new SuuriLuku(&quot;1&quot;);</span>
+<span class="fc" id="L489">                luku.kertolasku(kerroin);</span>
+<span class="fc" id="L490">                desimaalit.pluslasku(luku);</span>
+            }
+<span class="fc" id="L492">            kerroin.yhdenKertolasku(2); // Kasvatetaan potenssia.</span>
+        }
+<span class="fc" id="L494">        return desimaalit.getNumerot();</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

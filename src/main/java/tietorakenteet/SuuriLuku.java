@@ -29,24 +29,34 @@ public class SuuriLuku {
     /**
      * Tämänhetkinen alkuluku e:n arvo.
      */
-    private static final int PRIME_E = 65537;
+    private static final int ALKULUKU_E = 65537;
 
     /**
-     * Tyhjä konstruktori.
+     * Konstruktori, jossa kokonaislukutaulukko antaa SuuriLuku-olion numeerisen arvon.
+     * Tyhjä taulukko tulkitaan nollana.
+     *
+     * @param numerotTaulukko Sisältää numeerisen arvon yksittäisinä numeroina.
      */
-    public SuuriLuku() {
+    public SuuriLuku(final int[] numerotTaulukko) {
+        this.numerot = numerotTaulukko;
+        päivitäBigInt();
     }
 
     /**
      * Konstruktori, jossa merkkijono antaa SuuriLuku-olion numeerisen arvon.
+     * Tyhjä merkkijono tulkitaan nollana.
      *
      * @param lukuMerkkijonona Sisältää numeerisen arvon merkkijonon muodossaa.
      */
     public SuuriLuku(final String lukuMerkkijonona) {
-        this.numerot = new int[lukuMerkkijonona.length()];
-        for (int i = 0; i < lukuMerkkijonona.length(); i++) {
-            this.numerot[i] = lukuMerkkijonona.charAt(i) - '0'; // charAt antaa ASCII-arvoja(?), joten
-                                                                // Vähennetään '0' saadaksemme numeerisia arvoja.
+        if (lukuMerkkijonona.length() == 0) {
+            this.numerot = new int[]{0};
+        } else {
+            this.numerot = new int[lukuMerkkijonona.length()];
+            for (int i = 0; i < lukuMerkkijonona.length(); i++) {
+                this.numerot[i] = lukuMerkkijonona.charAt(i) - '0'; // charAt antaa ASCII-arvoja(?), joten
+                                                                    // Vähennetään '0' saadaksemme numeerisia arvoja.
+            }
         }
         päivitäBigInt();
     }
@@ -63,18 +73,76 @@ public class SuuriLuku {
         return new SuuriLuku(BigInteger.probablePrime(alkuluvunKoko, new Random()).toString());
     }
 
-    // TODO - korvaa omalla toteutuksella.
     /**
      * Kertolasku kahdelle SuurelleLuvulle.
      *
-     * @param kerrottava Mikä kerrotaan.
-     *
-     * @param kertoja Millä kerrotaan.
-     *
-     * @return Kertolaskun tulos.
+     * @param kerrottava SuuriLuku, jolla kerrotaan.
      */
-    public SuuriLuku kertolasku(final SuuriLuku kerrottava, final SuuriLuku kertoja) {
-        return new SuuriLuku(kerrottava.bigInt.multiply(kertoja.bigInt).toString());
+    // Kertolasku binäärin kautta voisi olla tehokkaampi, mutta vaatisi muutoksen desimaaliin.
+    // Oleellisesti toteutus kertolaskulla on vain summauksen toistoa. Tämä ei ole nopein
+    // tapa toteuttaa kertolasku, mutta se on intuitiviisin.
+    public void kertolasku(final SuuriLuku kerrottava) {
+        // Tarkistus nollalle ja tyhjälle.
+        if (this.onNolla() || kerrottava.onNolla()) {
+            this.numerot = new int[]{0};
+        } else {
+            SuuriLuku tulos = new SuuriLuku("0");
+            for (int i = 0; i <= kerrottava.getNumerot().length - 1; i++) {
+                SuuriLuku välitulos = this.kopio();
+                välitulos.yhdenKertolasku(kerrottava.numerot[kerrottava.numerot.length - 1 - i]);
+                välitulos.lisääNollia(i);
+                tulos.pluslasku(välitulos);
+            }
+            this.numerot = tulos.numerot;
+        }
+    }
+
+    /**
+     * Kerro SuuriLuku yhdellä numerolla [0-9].
+     *
+     * @param kerroin Numero, jolla kerrotaan.
+     */
+    public void yhdenKertolasku(final int kerroin) {
+        if (kerroin < 0 || kerroin > 9) {
+            throw new IllegalArgumentException();
+        }
+        SuuriLuku uusiSuuriLuku = new SuuriLuku("0");
+        for (int i = this.numerot.length - 1; i >= 0; i--) {
+            int luku = this.numerot[i] * kerroin; // Apumuuttuja.
+            int ykköset = luku % 10; // Apumuuttuja.
+            SuuriLuku suuriLuku;
+            if (luku >= 10) {
+                int kymmenet = (luku - ykköset) / 10; // Apumuuttuja.
+                suuriLuku = new SuuriLuku("" + kymmenet + ykköset);
+            } else {
+                suuriLuku = new SuuriLuku("" + ykköset);
+            }
+            suuriLuku.lisääNollia(this.numerot.length - 1 - i);
+            uusiSuuriLuku.pluslasku(suuriLuku);
+        }
+        this.numerot = uusiSuuriLuku.numerot;
+    }
+
+    /**
+     * Lisätään luvun loppuun nollia.
+     *
+     * @param montakoNollaa Lisättävien nollien määrä.
+     */
+    public void lisääNollia(final int montakoNollaa) {
+        int[] uudetNumerot = new int[this.numerot.length + montakoNollaa];
+        for (int i = 0; i < this.numerot.length; i++) {
+            uudetNumerot[i] = this.numerot[i];
+        }
+        this.numerot = uudetNumerot;
+    }
+
+    /**
+     * Kopioi SuuriLuku-olion numeerinen arvo.
+     *
+     * @return Uusi olio samalla numeerisella arvolla.
+     */
+    public SuuriLuku kopio() {
+        return new SuuriLuku(this.numerot);
     }
 
     /**
@@ -106,10 +174,10 @@ public class SuuriLuku {
                 this.numerot[viimeinenIndeksi] -= 1; // Triviaali tapaus, kun viimeinen luku ei ole nolla.
             }
             if (this.numerot[0] == 0) {
-                this.poistaAlunNollat(); // Siivotaan nollat alusta.
+                this.numerot = poistaAlunNollat(this.numerot); // Siivotaan nollat alusta.
             }
-            päivitäBigInt(); // Pidetään bigInt ajan tasalla.
         }
+        päivitäBigInt(); // Pidetään bigInt ajan tasalla.
     }
 
     /**
@@ -122,14 +190,13 @@ public class SuuriLuku {
         return this.bigInt;
     }
 
-    // TODO - korvaa omalla toteutuksella.
     /**
      * Palautetaan alkuluku e.
      *
      * @return alkuluku e.
      */
     public SuuriLuku e() {
-        return new SuuriLuku(new BigInteger("" + PRIME_E).toString());
+        return new SuuriLuku("" + ALKULUKU_E);
     }
 
     // TODO - korvaa omalla toteutuksella.
@@ -160,17 +227,15 @@ public class SuuriLuku {
         return new SuuriLuku(this.getBigInt().modPow(eksponentti.getBigInt(), jakojäännös.getBigInt()).toString());
     }
 
-    // TODO - korvaa omalla toteutuksella.
     /**
      * Palautetaan SuuriLuku-olion binäärisen arvon pituus.
      *
      * @return Kokonaisluku bittipituus.
      */
     public int bittiPituus() {
-        return this.getBigInt().bitLength();
+        return this.binäärinä().length;
     }
 
-    // TODO - korvaa omalla toteutuksella.
     /**
      * Tieto siitä, onko lukujen numeerinen arvo identtinen.
      *
@@ -179,7 +244,20 @@ public class SuuriLuku {
      * @return Totuusarvo siitä ovatko lukujen arvot samat.
      */
     public boolean samaLukuArvo(final SuuriLuku verrattava) {
-        return this.getBigInt().equals(verrattava.getBigInt());
+        int[] tämäNumerot = this.getNumerot(); // Tarpeeton muuttuja, mutta selkiyttää.
+        int[] verrattavaNumerot = verrattava.getNumerot(); // Tarpeeton muuttuja, mutta selkiyttää.
+        // Jos pituus on eri.
+        if (tämäNumerot.length != verrattavaNumerot.length) {
+            return false;
+        }
+        // Jos numeerinen arvo on eri.
+        for (int i = 0; i < tämäNumerot.length; i++) {
+            if (tämäNumerot[i] != verrattavaNumerot[i]) {
+                return false;
+            }
+        }
+        // Muulloin.
+        return true;
     }
 
     /**
@@ -196,25 +274,28 @@ public class SuuriLuku {
     }
 
     /**
-     * Poistetaan luvun alussa olevat numeerisesti tarpeettomat nollat (00001 = 1).
+     * oistetaan luvun alussa olevat numeerisesti tarpeettomat nollat (00001 = 1).
+     *
+     * @param luvut Käsiteltävät luvut.
+     *
+     * @return Luku ilman alkun nollia.
      */
-    public void poistaAlunNollat() {
+    public int[] poistaAlunNollat(final int[] luvut) {
         int nollaLaskuri = 0; // Pidetään kirjaa nollien määrästä.
-        for (int i = 0; i < numerot.length; i++) {
-            if (numerot[i] == 0) {
+        for (int i = 0; i < luvut.length; i++) {
+            if (luvut[i] == 0) {
                 nollaLaskuri++;
             } else {
-                break; // Silmukka voidaan lopettaa, mikäli löydetään yksi ei-nolla.
+                break; // Silmukka voidaan lopettaa, mikäli löydetään yksikin ei-nolla.
             }
         }
-        if (nollaLaskuri == numerot.length) {
-            // Poikkeustilanteessa kaikki numerot ovat nollia, jolloin palautamme nollan.
-            this.numerot = new int[]{0};
+        if (nollaLaskuri == luvut.length) {
+            // Poikkeustilanteessa kaikki luvut ovat nollia, jolloin palautamme nollan.
+            return  new int[]{0};
         } else {
             Taulukko taulukko = new Taulukko(); // Apuolio.
-            this.numerot = taulukko.kopioiTaulukkoVälillä(numerot, nollaLaskuri, numerot.length - 1);
+            return taulukko.kopioiTaulukkoVälillä(luvut, nollaLaskuri, luvut.length - 1);
         }
-        päivitäBigInt(); // PÄivitetään bigInt-arvo.
     }
 
     /**
@@ -226,4 +307,191 @@ public class SuuriLuku {
     private void päivitäBigInt() {
         this.bigInt = new BigInteger(this.merkkijonoksi());
     }
+
+    /**
+     * SuuriLuvun numerot taulukkona.
+     *
+     * @return Taulukku lukuarvoista.
+     */
+    public int[] getNumerot() {
+        return this.numerot;
+    }
+
+    /**
+     * Muutetaan SuuriLuku binäärimuotoon.
+     *
+     * @return Palautetaan binääri taulukkona.
+     */
+    public int[] binäärinä() {
+        // Triviaali tapaus, kun luku on nolla.
+        if (this.onNolla()) {
+            return new int[]{0};
+        }
+
+        // Kopioidaan numerot, jotta voimme muokata taulukkoa.
+        int[] numerotTilapäinen = this.numerot;
+        // Alustetaan koko niin, että se on aina riittävän suuri, jotta siitä ei tarvitse
+        // välittää alussa. Pienennetään koko myöhemmin.
+        int[] binääriNumerot = new int[numerotTilapäinen.length * 10];
+        int indeksi = 0; // Indeksi.
+        Boolean silmukka = true; // Asetetaan silmukka.
+
+        while (!vainNollia(numerotTilapäinen)) { // Varsinainen muunnos.
+            binääriNumerot[indeksi] = kahdenJakojäännös(numerotTilapäinen); // Uusi numero.
+            numerotTilapäinen = kahdenOsamäärä(numerotTilapäinen); // Jaetaan koko luku kahdella.
+            if (vainNollia(numerotTilapäinen)) {
+                silmukka = false;
+            }
+            indeksi++;
+        }
+
+        // Käännä numeroiden järjetys.
+        Taulukko taulukko = new Taulukko(); // Apuolio.
+        // Käännetään taulukko ympäri ja poistetaan tarpeettomat nollat.
+        return poistaAlunNollat(taulukko.taulukkoTakaperin(binääriNumerot));
+    }
+
+    /**
+     * Palautetaan tieto siitä onko luvussa vain nollia.
+     *
+     * @param luvut Tarkistettavat luvut.
+     *
+     * @return Totuusarvo onko luku vain nollia.
+     */
+    public boolean vainNollia(final int[] luvut) {
+        for (int i = 0; i < luvut.length; i++) {
+            if (luvut[i] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Tulos joka saadaan jaettaessa luku kahdella, kun jakojäännös jätetään huomiotta.
+     *
+     * @param luvut Halutun luvun kahden osamärää.
+     *
+     * @return Jakolaskun tulos jaettassa kahdella ilman jakojäännöstä.
+     */
+    public int[] kahdenOsamäärä(final int[] luvut) {
+        for (int i = luvut.length - 1; i >= 0; i--) { // Lopusta alkuun.
+            int numero = luvut[i]; // Tarpeeton, mutta helpottaa elämää.
+            if (numero != 0) { // Mikäli numero on nolla ei mitään tarvitse tehdä.
+                if (numero % 2 == 0) { // Mikäli jakojäännös on tasan, ei tarvitse miettiä
+                                       // jaoen vaikutusta muihin numeroihin.
+                    luvut[i] = numero / 2;
+                } else { // Jakojäännös ei ole tasan, luku on pariton.
+                    luvut[i] = (numero - 1) / 2;
+                    if (i != luvut.length - 1) { // Tarkistetaan ettei olla luvun lopussa.
+                        luvut[i + 1] += 5; // Korjataan seuraava luku lisäämällä siihen 5 (10/2=5).
+                    }
+                }
+            }
+        }
+        return poistaAlunNollat(luvut); // Palautetaan ilman ylimääräisiä nollia.
+    }
+
+    /**
+     * Mikä on jakojäännös, jos luku jaetaan kahdella.
+     *
+     * @param luvut Jaettava luku.
+     *
+     * @return Jakojäännös.
+     */
+    public int kahdenJakojäännös(final int[] luvut) {
+        if (luvut[luvut.length - 1] % 2 == 0) {
+            return 0;
+        }
+        return 1;
+    }
+
+    /**
+     * Kahden SuuriLuku-olion pluslasku.
+     *
+     * @param lisättävä arvo, joka halutaan lisätä.
+     */
+    public void pluslasku(final SuuriLuku lisättävä) {
+        int[] tämäNumerot = this.getNumerot(); // Ei välttämätön, mutta helpottaa.
+        int[] lisättäväNumerot = lisättävä.getNumerot(); // Ei välttämätön, mutta helpottaa.
+        int[] summaNumerot;
+        int tämäNumerotPituus = tämäNumerot.length; // Ei välttämätön, mutta helpottaa.
+        int lisättäväNumerotPituus = lisättäväNumerot.length; // Ei välttämätön, mutta helpottaa.
+        // Pluslaskun tulos on numerona vähintään yhtä pitkä kuin pidempi summattava,
+        // ja enintään niin pitkä kuin pidempi summattava + 1.
+        // Mahdollinen ylimääräinen pituus käsitellään lopussa.
+        if (tämäNumerotPituus > lisättäväNumerotPituus) {
+            summaNumerot = new int[tämäNumerotPituus + 1];
+        } else {
+            summaNumerot = new int[lisättäväNumerotPituus + 1];
+        }
+
+        Boolean ylitseMenevä = false; // Muuttuja, joka kertoo onko summan tulos 10 tai yli.
+        int tämäNumerotIndeksi = tämäNumerot.length - 1;
+        int lisättäväNumerotIndeksi = lisättäväNumerot.length - 1;
+        for (int i = summaNumerot.length - 1; i >= 0; i--) {
+            int summa = 0; // Kahden numeron summa, seuraava luku.
+            if (tämäNumerotIndeksi >= 0) {
+                summa += tämäNumerot[tämäNumerotIndeksi];
+            }
+            if (lisättäväNumerotIndeksi >= 0) {
+                summa += lisättäväNumerot[lisättäväNumerotIndeksi];
+            }
+            if (ylitseMenevä) {
+                summa++;
+            }
+
+            if (summa >= 10) {
+                ylitseMenevä = true; // Pidetään kirjaa summauksen vaikutuksesta muualle.
+                summa -= 10; // Halutaan vain viimeisin numero.
+            } else {
+                ylitseMenevä = false;
+            }
+            summaNumerot[i] = summa; // Lisätään saatu numero tuloksiin.
+            tämäNumerotIndeksi--;
+            lisättäväNumerotIndeksi--;
+            summa = 0; // Jatketaan nollasta, jotta saadaan uusi numero.
+        }
+        // Asetetaan saadut tulokset.
+        this.numerot = poistaAlunNollat(summaNumerot); // Ylimääräisten nollien poisto ja koon pienennys.
+        päivitäBigInt();
+    }
+
+    /**
+     * Onko SuuriLuku-olion arvo nolla.
+     *
+     * @return Onko arvo nolla vai ei.
+     */
+    public boolean onNolla() {
+        if (this.numerot.length == 0 || (this.numerot.length == 1 && this.numerot[0] == 0)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Muutos binäärinumeroista desimaalinumeroiksi.
+     *
+     * @param binäärit Muutettava binääri.
+     *
+     * @return Desimaali, jolla on sama arvo parametrin binäärien kanssa.
+     */
+    public int[] desimaaliksi(final int[] binäärit) {
+        // Muutos binääristä desimaaliksi on toteuttu käymällä binäärit
+        // yksitellen läpi ja ja lisäämällä näiden kerroin summaan, mikäli
+        // binääri on yhden. Tapa ei ole tehokkain, mutta se on selkeä.
+        SuuriLuku desimaalit = new SuuriLuku("0");
+        SuuriLuku kerroin = new SuuriLuku("1");
+        // Läpikäynti vähiten merkitsevästä numerosta eniten merkitsevään.
+        for (int i = binäärit.length - 1; i >= 0; i--) {
+            if (binäärit[i] == 1) { // Mikäli binäärissä on nolla, ei mitään tarvitse lisätä.
+                SuuriLuku luku = new SuuriLuku("1");
+                luku.kertolasku(kerroin);
+                desimaalit.pluslasku(luku);
+            }
+            kerroin.yhdenKertolasku(2); // Kasvatetaan potenssia.
+        }
+        return desimaalit.getNumerot();
+    }
+
 }

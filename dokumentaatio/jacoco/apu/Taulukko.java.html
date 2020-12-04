@@ -32,5 +32,23 @@ public class Taulukko {
         }
 <span class="fc" id="L33">        return uusiTaulukko;</span>
     }
+
+    /**
+     * Kopioi taulukko niin, että alkioit ovat takaperoisessa järjestyksessä.
+     *
+     * @param taulukko Kopioitava taulukko.
+     *
+     * @return Taulukon alkiot käännettynä.
+     */
+    public int[] taulukkoTakaperin(final int[] taulukko) {
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">        if (taulukko.length == 0) { // Mikäli paremetrina tyhjä taulukko.</span>
+<span class="nc" id="L45">            return new int[]{0};</span>
+        }
+<span class="fc" id="L47">        int[] taulukkoKäännetty = new int[taulukko.length]; // Palautetttava.</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        for (int i = 0; i &lt; taulukko.length; i++) {</span>
+<span class="fc" id="L49">            taulukkoKäännetty[i] = taulukko[taulukko.length - 1 - i]; // Indeksit lopusta lähtien.</span>
+        }
+<span class="fc" id="L51">        return taulukkoKäännetty;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

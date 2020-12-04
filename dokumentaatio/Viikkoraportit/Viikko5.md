@@ -1,7 +1,3 @@
 # Viikko 5
 
-### Tehty, edistytty ja opittu
-
-### Ongelmia
-
-### Seuraavaksi
+Ei tehty mitään palautuksia, mietitty kuitenkin asioita ja kirjoitettu jonkin verran koodia.

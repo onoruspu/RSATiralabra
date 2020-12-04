@@ -18,7 +18,7 @@ public class AvaimenLuoja {
      * @return Avaimen, joka sisältää julkisen ja yksityisen avaimen tiedot (n,e,d).
      */
     public Avain luoAvaimet() {
-        SuuriLuku suuriLuku = new SuuriLuku(); // Olio SuuriLuku-luokan metodien käyttämiseen.
+        SuuriLuku suuriLuku = new SuuriLuku(""); // Olio SuuriLuku-luokan metodien käyttämiseen.
 
         // Alkuluku p.
         SuuriLuku p = suuriLuku.uusiAlkuluku(ALKULUVUN_KOKO);
@@ -27,12 +27,14 @@ public class AvaimenLuoja {
         SuuriLuku q = suuriLuku.uusiAlkuluku(ALKULUVUN_KOKO);
 
         // Jakonäännös n.
-        SuuriLuku n = suuriLuku.kertolasku(p, q);
+        SuuriLuku n = p.kopio();
+        n.kertolasku(q);
 
         // Fii (engl. phi).
         p.yhdenPienempi();
         q.yhdenPienempi();
-        SuuriLuku fii = suuriLuku.kertolasku(p, q);
+        SuuriLuku fii = p.kopio();
+        fii.kertolasku(q);
 
         // e - julkinen avain
         SuuriLuku e = suuriLuku.e();
@@ -41,8 +43,6 @@ public class AvaimenLuoja {
         SuuriLuku d = suuriLuku.jakojäännösKäänteisluku(e, fii);
 
         // Avain-luokka toimii toistaiseksi BigInteger-oliolla.
-        // return new Avain(n.getBigInt(), e.getBigInt(), d.getBigInt());
-
         return new Avain(n, e, d);
     }
 
