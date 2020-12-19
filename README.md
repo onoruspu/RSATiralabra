@@ -1,5 +1,9 @@
 # RSATiralabra
 
+## Lopullinen palautus.
+
+En saa itseäni tekemään enempää. Algoritmeja en osaa tehdä ilman, että niistä muodostuu liian suuria, monimutkaisia ja hitaita. Tämä syö motivaationi enkä osaa kirjoittaa dokumentteja loppuun. Tästä huolimatta, ainakin yritin. Hyvää joulua.
+
 ## Dokumentaatio
 
 ### Varsinainen dokumentaatio
